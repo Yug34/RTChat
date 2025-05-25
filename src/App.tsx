@@ -10,6 +10,22 @@ import { doc, DocumentData, getDoc } from 'firebase/firestore'
 import { db } from './utils/firebase'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Card, CardTitle } from "@/components/ui/card"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { Info } from "lucide-react"
 import { cn } from './lib/utils'
 import PermissionsDrawer from './components/PermissionsDrawer'
 
@@ -191,28 +207,74 @@ const App = () => {
         autoPlay
         playsInline
       />
-      <div className='mb-4'>
-        <Button
-          onClick={startCall}
-          disabled={!isInitialized || role === 'answer'}
-        >
-          Create a call
-        </Button>
-        <Input
-          className='px-2 py-1 mr-2 border'
-          placeholder='Enter Call ID to Join'
-          value={joinId}
-          onChange={e => setJoinId(e.target.value)}
-          disabled={role === 'offer'}
-        />
-        <Button
-          className='px-4 py-2 text-white bg-green-500 rounded'
-          onClick={joinCall}
-          disabled={!isInitialized || !joinId || role === 'offer'}
-        >
-          Join Call
-        </Button>
-      </div>
+      <Card className='flex flex-col p-4 gap-y-2'>
+        <CardTitle>RTChat</CardTitle>
+        <span className='text-sm text-gray-500'>
+          Hi! This is a simple peer-to-peer video calling and file sharing app made with WebRTC.
+        </span>
+        <span className='text-sm text-gray-500'>
+          You can either create a call and send your friend the Call ID to have them join a call.
+        </span>
+        <span className='text-sm text-gray-500'>
+          Or if you were given a Call ID by someone, simply paste it in the input field and click on Join Call.
+        </span>
+        <div className='flex w-full'>
+          <Button
+            onClick={startCall}
+            disabled={!isInitialized || role === 'answer'}
+            className='rounded-r-none'
+          >
+            Create a call
+          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  className='rounded-l-none w-fit'
+                >
+                  <Info className='w-4 h-4' />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Add to library</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+        <div className='flex items-center gap-x-4'>
+          <span className='h-[1px] w-[50%] bg-gray-400'></span>
+          <span className='text-sm text-gray-500'>Or</span>
+          <span className='h-[1px] w-[50%] bg-gray-400'></span>
+        </div>
+        <Dialog>
+          <DialogTrigger>
+            <Button className='w-full'>Join call</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle className='text-md'>Paste the Call ID here to join</DialogTitle>
+              <DialogDescription>
+              <div className='flex flex-row items-center justify-center'>
+                <Input
+                  className='px-2 py-1 border rounded-r-none'
+                  placeholder='Enter Call ID to Join'
+                  value={joinId}
+                  onChange={e => setJoinId(e.target.value)}
+                  disabled={role === 'offer'}
+                />
+                <Button
+                  className='px-4 py-2 rounded-l-none'
+                  onClick={joinCall}
+                  disabled={!isInitialized || !joinId || role === 'offer'}
+                >
+                  Join Call
+                </Button>
+              </div>
+              </DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
+      </Card>
       {callId && (
         <div className='mb-2'>
           <span className='font-mono'>Call ID: <b>{callId}</b></span>
