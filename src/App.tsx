@@ -158,6 +158,7 @@ const App = () => {
     const docSnap = await getDoc(docRef)
     if (!docSnap.exists()) {
       setStatus('Call not found!')
+      setRole(null)
       return
     }
     const data: DocumentData = docSnap.data() as DocumentData
@@ -207,25 +208,45 @@ const App = () => {
         autoPlay
         playsInline
       />
-      <Card className='flex flex-col p-4 gap-y-2'>
+      <Card className='flex flex-col p-6 gap-y-2 w-full max-w-[400px]'>
         <CardTitle>RTChat</CardTitle>
-        <span className='text-sm text-gray-500'>
-          Hi! This is a simple peer-to-peer video calling and file sharing app made with WebRTC.
-        </span>
-        <span className='text-sm text-gray-500'>
-          You can either create a call and send your friend the Call ID to have them join a call.
-        </span>
-        <span className='text-sm text-gray-500'>
-          Or if you were given a Call ID by someone, simply paste it in the input field and click on Join Call.
-        </span>
         <div className='flex w-full'>
           <Button
             onClick={startCall}
             disabled={!isInitialized || role === 'answer'}
-            className='rounded-r-none'
+            className='flex-1 rounded-r-none'
           >
-            Create a call
+            Host a call
           </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  className='rounded-l-none'
+                >
+                  <Info className='w-4 h-4' />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Host a call and send your friend the Call ID to join your call.</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+        <div className='flex items-center gap-x-4'>
+          <span className='h-[1px] w-[50%] bg-gray-400'></span>
+          <span className='text-sm text-gray-500'>Or</span>
+          <span className='h-[1px] w-[50%] bg-gray-400'></span>
+        </div>
+        <span className='flex flex-row'>
+          <Input
+            className='px-2 py-1 border rounded-r-none'
+            placeholder='Enter Call ID to Join'
+            value={joinId}
+            onChange={e => setJoinId(e.target.value)}
+            disabled={role === 'offer'}
+          />
+          <Button className='rounded-l-none rounded-r-none' onClick={joinCall} disabled={!isInitialized || !joinId || role === 'offer'}>Join call</Button>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -236,44 +257,11 @@ const App = () => {
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Add to library</p>
+                <p>Already have a Call ID? Paste it here to join a call!</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-        </div>
-        <div className='flex items-center gap-x-4'>
-          <span className='h-[1px] w-[50%] bg-gray-400'></span>
-          <span className='text-sm text-gray-500'>Or</span>
-          <span className='h-[1px] w-[50%] bg-gray-400'></span>
-        </div>
-        <Dialog>
-          <DialogTrigger>
-            <Button className='w-full'>Join call</Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle className='text-md'>Paste the Call ID here to join</DialogTitle>
-              <DialogDescription>
-              <div className='flex flex-row items-center justify-center'>
-                <Input
-                  className='px-2 py-1 border rounded-r-none'
-                  placeholder='Enter Call ID to Join'
-                  value={joinId}
-                  onChange={e => setJoinId(e.target.value)}
-                  disabled={role === 'offer'}
-                />
-                <Button
-                  className='px-4 py-2 rounded-l-none'
-                  onClick={joinCall}
-                  disabled={!isInitialized || !joinId || role === 'offer'}
-                >
-                  Join Call
-                </Button>
-              </div>
-              </DialogDescription>
-            </DialogHeader>
-          </DialogContent>
-        </Dialog>
+        </span>
       </Card>
       {callId && (
         <div className='mb-2'>
