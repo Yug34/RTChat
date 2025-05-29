@@ -1,5 +1,5 @@
 import { Button } from './ui/button'
-import { Drawer, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from './ui/drawer'
+import { Drawer, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from './ui/drawer'
 
 interface PermissionDrawerProps {
   isPermissionGranted: boolean
@@ -8,15 +8,16 @@ interface PermissionDrawerProps {
 const PermissionsDrawer = ({ isPermissionGranted }: PermissionDrawerProps) => {
   return (
     <Drawer open={!isPermissionGranted}>
-    <DrawerContent>
-      <DrawerHeader>
-        <DrawerTitle>Please grant permission to use your camera and microphone, and click on Refresh!</DrawerTitle>
-      </DrawerHeader>
-      <DrawerFooter>
-        <Button onClick={() => window.location.reload()}>Refresh</Button>
-      </DrawerFooter>
-    </DrawerContent>
-  </Drawer>
+      <DrawerContent>
+        <DrawerHeader>
+          <DrawerTitle className='text-xl text-red-500'>⚠️ Missing Permissions</DrawerTitle>
+        </DrawerHeader>
+        <DrawerFooter className='pt-0'>
+          <DrawerDescription className='text-lg'>Please grant permissions to use your camera and microphone, and click on Refresh!</DrawerDescription>
+          <Button onClick={() => window.location.reload()} className='cursor-pointer'>Refresh</Button>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   )
 }
 

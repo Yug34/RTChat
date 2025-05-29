@@ -12,14 +12,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardTitle } from "@/components/ui/card"
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
@@ -36,7 +28,6 @@ const App = () => {
   const [role, setRole] = useState<'offer' | 'answer' | null>(null)
   const [status, setStatus] = useState<string>('')
   const [isGuestConnected, setIsGuestConnected] = useState(false)
-  const [isHost, setIsHost] = useState<boolean | null>(null)
   const [isPermissionGranted, setIsPermissionGranted] = useState(true)
   
   const selfVideoRef = useRef<HTMLVideoElement>(null)
@@ -123,7 +114,6 @@ const App = () => {
         pc.addIceCandidate(new RTCIceCandidate(candidate))
       })
     )
-    setIsHost(true)
   }
 
   // ANSWERER: Join a call
@@ -214,7 +204,7 @@ const App = () => {
           <Button
             onClick={startCall}
             disabled={!isInitialized || role === 'answer'}
-            className='flex-1 rounded-r-none'
+            className='flex-1 rounded-r-none cursor-pointer'
           >
             Host a call
           </Button>
@@ -246,12 +236,12 @@ const App = () => {
             onChange={e => setJoinId(e.target.value)}
             disabled={role === 'offer'}
           />
-          <Button className='rounded-l-none rounded-r-none' onClick={joinCall} disabled={!isInitialized || !joinId || role === 'offer'}>Join call</Button>
+          <Button className='rounded-l-none rounded-r-none cursor-pointer' onClick={joinCall} disabled={!isInitialized || !joinId || role === 'offer'}>Join call</Button>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  className='rounded-l-none w-fit'
+                  className='rounded-l-none'
                 >
                   <Info className='w-4 h-4' />
                 </Button>
@@ -269,13 +259,6 @@ const App = () => {
         </div>
       )}
       {status && <div className='mb-2 text-blue-700'>{status}</div>}
-      <div>
-        {isHost ? (
-          <div>
-            Guest Connected - todo: replace with green dot: {isGuestConnected ? "Yes" : "No"}
-          </div>
-        ) : null}
-      </div>
     </main>
   )
 }
