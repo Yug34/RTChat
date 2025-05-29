@@ -4,20 +4,15 @@ import {
   listenForAnswer,
   setAnswer,
   addIceCandidate,
-  listenForIceCandidates
+  listenForIceCandidates,
 } from './utils/signaling'
 import { doc, DocumentData, getDoc } from 'firebase/firestore'
 import { db } from './utils/firebase'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardTitle } from "@/components/ui/card"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { Info } from "lucide-react"
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Card, CardTitle } from '@/components/ui/card'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Info } from 'lucide-react'
 import { cn } from './lib/utils'
 import PermissionsDrawer from './components/PermissionsDrawer'
 
@@ -27,9 +22,9 @@ const App = () => {
   const [joinId, setJoinId] = useState<string>('')
   const [role, setRole] = useState<'offer' | 'answer' | null>(null)
   const [status, setStatus] = useState<string>('')
-  const [isGuestConnected, setIsGuestConnected] = useState(false)
+  const [isRemoteStreamActive, setIsRemoteStreamActive] = useState(false)
   const [isPermissionGranted, setIsPermissionGranted] = useState(true)
-  
+
   const selfVideoRef = useRef<HTMLVideoElement>(null)
   const guestVideoRef = useRef<HTMLVideoElement>(null)
 
@@ -43,12 +38,12 @@ const App = () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: true,
-        audio: false
+        audio: false,
       })
       selfVideoRef.current!.srcObject = stream
       setLocalStream(stream)
       setIsInitialized(true)
-    } catch (error) {
+    } catch {
       setIsPermissionGranted(false)
     }
   }
@@ -62,16 +57,16 @@ const App = () => {
     guestVideoRef.current!.srcObject = remote
 
     // Add local tracks
-    localStream!.getTracks().forEach(track => {
+    localStream!.getTracks().forEach((track) => {
       pc.addTrack(track, localStream!)
     })
 
     // On remote track
     pc.ontrack = (event) => {
-      event.streams[0].getTracks().forEach(track => {
+      event.streams[0].getTracks().forEach((track) => {
         remote.addTrack(track)
       })
-      setIsGuestConnected(true)
+      setIsRemoteStreamActive(true)
     }
 
     // On ICE connection state change
@@ -81,7 +76,7 @@ const App = () => {
         pc.iceConnectionState === 'failed' ||
         pc.iceConnectionState === 'closed'
       ) {
-        setIsGuestConnected(false)
+        setIsRemoteStreamActive(false)
       }
     }
 
@@ -105,14 +100,14 @@ const App = () => {
       onAnswer: async (answer) => {
         await pc.setRemoteDescription(new RTCSessionDescription(answer))
         setStatus('Connected!')
-      }
+      },
     })
 
     // Listen for answerer's ICE candidates
     iceUnsubs.current.push(
       listenForIceCandidates(newCallId, 'answer', (candidate) => {
         pc.addIceCandidate(new RTCIceCandidate(candidate))
-      })
+      }),
     )
   }
 
@@ -125,13 +120,13 @@ const App = () => {
     guestVideoRef.current!.srcObject = remote
 
     // Add local tracks
-    localStream!.getTracks().forEach(track => {
+    localStream!.getTracks().forEach((track) => {
       pc.addTrack(track, localStream!)
     })
 
     // On remote track
     pc.ontrack = (event) => {
-      event.streams[0].getTracks().forEach(track => {
+      event.streams[0].getTracks().forEach((track) => {
         remote.addTrack(track)
       })
     }
@@ -164,7 +159,7 @@ const App = () => {
     iceUnsubs.current.push(
       listenForIceCandidates(joinId, 'offer', (candidate) => {
         pc.addIceCandidate(new RTCIceCandidate(candidate))
-      })
+      }),
     )
   }
 
@@ -173,48 +168,43 @@ const App = () => {
 
     const unsubs = iceUnsubs.current
     return () => {
-      unsubs.forEach(unsub => unsub())
+      unsubs.forEach((unsub) => unsub())
       if (answerUnsub.current) answerUnsub.current()
     }
   }, [])
 
   return (
-    <main className='flex flex-col items-center justify-center w-screen h-screen'>
+    <main className="flex flex-col items-center justify-center w-screen h-screen">
       <PermissionsDrawer isPermissionGranted={isPermissionGranted} />
       <video
-        className='absolute top-0 left-0 w-full h-full bg-black opacity-20 -z-10'
+        className="absolute top-0 left-0 w-full h-full bg-black opacity-20 -z-10"
         ref={selfVideoRef}
         autoPlay
         playsInline
       />
-      <video 
-        className={
-          cn(
-            "absolute top-4 left-4 w-[400px] h-[400px] bg-black", 
-            { 'hidden': !isGuestConnected }
-          )
-        }
+      <video
+        className={cn('absolute top-4 left-4 w-[400px] h-[400px] bg-black', {
+          hidden: !isRemoteStreamActive,
+        })}
         ref={guestVideoRef}
         autoPlay
         playsInline
       />
-      <Card className='flex flex-col p-6 gap-y-2 w-full max-w-[400px]'>
+      <Card className="flex flex-col p-6 gap-y-2 w-full max-w-[400px]">
         <CardTitle>RTChat</CardTitle>
-        <div className='flex w-full'>
+        <div className="flex w-full">
           <Button
             onClick={startCall}
             disabled={!isInitialized || role === 'answer'}
-            className='flex-1 rounded-r-none cursor-pointer'
+            className="flex-1 rounded-r-none cursor-pointer"
           >
             Host a call
           </Button>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button
-                  className='rounded-l-none'
-                >
-                  <Info className='w-4 h-4' />
+                <Button className="rounded-l-none">
+                  <Info className="w-4 h-4" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
@@ -223,27 +213,31 @@ const App = () => {
             </Tooltip>
           </TooltipProvider>
         </div>
-        <div className='flex items-center gap-x-4'>
-          <span className='h-[1px] w-[50%] bg-gray-400'></span>
-          <span className='text-sm text-gray-500'>Or</span>
-          <span className='h-[1px] w-[50%] bg-gray-400'></span>
+        <div className="flex items-center gap-x-4">
+          <span className="h-[1px] w-[50%] bg-gray-400"></span>
+          <span className="text-sm text-gray-500">Or</span>
+          <span className="h-[1px] w-[50%] bg-gray-400"></span>
         </div>
-        <span className='flex flex-row'>
+        <span className="flex flex-row">
           <Input
-            className='px-2 py-1 border rounded-r-none'
-            placeholder='Enter Call ID to Join'
+            className="px-2 py-1 border rounded-r-none"
+            placeholder="Enter Call ID to Join"
             value={joinId}
-            onChange={e => setJoinId(e.target.value)}
+            onChange={(e) => setJoinId(e.target.value)}
             disabled={role === 'offer'}
           />
-          <Button className='rounded-l-none rounded-r-none cursor-pointer' onClick={joinCall} disabled={!isInitialized || !joinId || role === 'offer'}>Join call</Button>
+          <Button
+            className="rounded-l-none rounded-r-none cursor-pointer"
+            onClick={joinCall}
+            disabled={!isInitialized || !joinId || role === 'offer'}
+          >
+            Join call
+          </Button>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button
-                  className='rounded-l-none'
-                >
-                  <Info className='w-4 h-4' />
+                <Button className="rounded-l-none">
+                  <Info className="w-4 h-4" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
@@ -254,11 +248,13 @@ const App = () => {
         </span>
       </Card>
       {callId && (
-        <div className='mb-2'>
-          <span className='font-mono'>Call ID: <b>{callId}</b></span>
+        <div className="mb-2">
+          <span className="font-mono">
+            Call ID: <b>{callId}</b>
+          </span>
         </div>
       )}
-      {status && <div className='mb-2 text-blue-700'>{status}</div>}
+      {status && <div className="mb-2 text-blue-700">{status}</div>}
     </main>
   )
 }

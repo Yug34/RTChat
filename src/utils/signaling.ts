@@ -31,15 +31,23 @@ export const setAnswer = async (callId: string, answer: RTCSessionDescriptionIni
   await updateDoc(callRef, { answer })
 }
 
-export const addIceCandidate = async (callId: string, candidate: Candidate, role: 'offer' | 'answer') => {
+export const addIceCandidate = async (
+  callId: string,
+  candidate: Candidate,
+  role: 'offer' | 'answer',
+) => {
   const candidatesRef = collection(db, 'calls', callId, `${role}Candidates`)
   await addDoc(candidatesRef, candidate)
 }
 
-export const listenForIceCandidates = (callId: string, role: 'offer' | 'answer', cb: (candidate: Candidate) => void) => {
+export const listenForIceCandidates = (
+  callId: string,
+  role: 'offer' | 'answer',
+  cb: (candidate: Candidate) => void,
+) => {
   const candidatesRef = collection(db, 'calls', callId, `${role}Candidates`)
   return onSnapshot(candidatesRef, (snapshot) => {
-    snapshot.docChanges().forEach(change => {
+    snapshot.docChanges().forEach((change) => {
       if (change.type === 'added') {
         cb(change.doc.data() as Candidate)
       }
@@ -50,4 +58,4 @@ export const listenForIceCandidates = (callId: string, role: 'offer' | 'answer',
 export const cleanupCall = async (callId: string) => {
   const callRef = doc(db, 'calls', callId)
   await deleteDoc(callRef)
-} 
+}
