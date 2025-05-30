@@ -195,14 +195,8 @@ const App = () => {
         joinId={joinId}
         setJoinId={setJoinId}
         status={status}
+        callId={callId}
       />
-      {callId && (
-        <div className="mb-2">
-          <span className="font-mono">
-            Call ID: <b>{callId}</b>
-          </span>
-        </div>
-      )}
     </main>
   )
 }

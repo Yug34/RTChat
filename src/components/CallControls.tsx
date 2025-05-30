@@ -1,10 +1,11 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Card, CardTitle } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Loader2Icon } from 'lucide-react'
-import { Info } from 'lucide-react'
-import React from 'react'
+import { Info, Clipboard, ClipboardCheck } from 'lucide-react'
+import { toast } from 'sonner'
+import React, { useState } from 'react'
 
 interface CallControlsProps {
   isInitialized: boolean
@@ -14,6 +15,7 @@ interface CallControlsProps {
   joinId: string
   setJoinId: (id: string) => void
   status: 'Standby' | 'Joining' | 'Hosting' | 'Connected' | 'Waiting' | 'NotFound'
+  callId: string
 }
 
 const CallControls: React.FC<CallControlsProps> = ({
@@ -24,14 +26,54 @@ const CallControls: React.FC<CallControlsProps> = ({
   joinId,
   setJoinId,
   status,
+  callId,
 }) => {
+  const [recentlyCopied, setRecentlyCopied] = useState(false)
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(callId)
+    toast.success('Copied Call ID to clipboard!')
+    setRecentlyCopied(true)
+    setTimeout(() => setRecentlyCopied(false), 1500)
+  }
+
   if (status === 'Waiting') {
     return (
-      <Card className="flex flex-col p-6 gap-y-2 w-full max-w-[400px]">
+      <Card className="flex flex-col p-6 gap-y-4 w-full max-w-[400px]">
         <div className="flex w-full">
           <Button disabled className="w-full">
             Waiting for guest to join...
             <Loader2Icon className="w-4 h-4 animate-spin" />
+          </Button>
+        </div>
+        <div className="flex items-center gap-x-4">
+          <span className="h-[1px] w-[100%] bg-gray-400"></span>
+        </div>
+        <div className="flex w-full">
+          <Button
+            className="rounded-r-none cursor-pointer"
+            onClick={copyToClipboard}
+            variant="outline"
+          >
+            Copy Call ID
+          </Button>
+          <Button
+            className="rounded-none cursor-pointer"
+            onClick={copyToClipboard}
+            variant="secondary"
+          >
+            {callId}
+          </Button>
+          <Button
+            variant="outline"
+            onClick={copyToClipboard}
+            className="rounded-l-none cursor-pointer"
+          >
+            {recentlyCopied ? (
+              <ClipboardCheck className="w-4 h-4" />
+            ) : (
+              <Clipboard className="w-4 h-4" />
+            )}
           </Button>
         </div>
       </Card>
