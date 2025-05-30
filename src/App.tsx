@@ -11,13 +11,16 @@ import { db } from './utils/firebase'
 import { cn } from './lib/utils'
 import PermissionsDrawer from './components/PermissionsDrawer'
 import CallControls from './components/CallControls'
+import { toast } from 'sonner'
 
 const App = () => {
   const [isInitialized, setIsInitialized] = useState(false)
   const [callId, setCallId] = useState<string>('')
   const [joinId, setJoinId] = useState<string>('')
   const [role, setRole] = useState<'offer' | 'answer' | null>(null)
-  const [status, setStatus] = useState<string>('')
+  const [status, setStatus] = useState<
+    'Standby' | 'Joining' | 'Hosting' | 'Connected' | 'Waiting' | 'NotFound'
+  >('Standby')
   const [isRemoteStreamActive, setIsRemoteStreamActive] = useState(false)
   const [isPermissionGranted, setIsPermissionGranted] = useState(true)
 
@@ -47,7 +50,7 @@ const App = () => {
   // OFFERER: Start a call
   const startCall = async () => {
     setRole('offer')
-    setStatus('Creating call...')
+    setStatus('Hosting')
     const pc = new RTCPeerConnection()
     const remote = new MediaStream()
     guestVideoRef.current!.srcObject = remote
@@ -67,11 +70,7 @@ const App = () => {
 
     // On ICE connection state change
     pc.oniceconnectionstatechange = () => {
-      if (
-        pc.iceConnectionState === 'disconnected' ||
-        pc.iceConnectionState === 'failed' ||
-        pc.iceConnectionState === 'closed'
-      ) {
+      if (['disconnected', 'failed', 'closed'].includes(pc.iceConnectionState)) {
         setIsRemoteStreamActive(false)
       }
     }
@@ -82,7 +81,8 @@ const App = () => {
     // Store offer in Firestore
     const { callId: newCallId } = await createCall(offer)
     setCallId(newCallId)
-    setStatus('Waiting for answer...')
+    toast.success('Call created! Share the Call ID with your friend.')
+    setStatus('Waiting')
 
     // On ICE candidate
     pc.onicecandidate = async (event) => {
@@ -95,7 +95,7 @@ const App = () => {
     answerUnsub.current = listenForAnswer(newCallId, {
       onAnswer: async (answer) => {
         await pc.setRemoteDescription(new RTCSessionDescription(answer))
-        setStatus('Connected!')
+        setStatus('Connected')
       },
     })
 
@@ -110,7 +110,7 @@ const App = () => {
   // ANSWERER: Join a call
   const joinCall = async () => {
     setRole('answer')
-    setStatus('Joining call...')
+    setStatus('Joining')
     const pc = new RTCPeerConnection()
     const remote = new MediaStream()
     guestVideoRef.current!.srcObject = remote
@@ -139,7 +139,7 @@ const App = () => {
     const docRef = doc(db, 'calls', joinId)
     const docSnap = await getDoc(docRef)
     if (!docSnap.exists()) {
-      setStatus('Call not found!')
+      setStatus('NotFound')
       setRole(null)
       return
     }
@@ -150,7 +150,7 @@ const App = () => {
     await pc.setLocalDescription(answer)
     await setAnswer(joinId, answer)
     setCallId(joinId)
-    setStatus('Connected!')
+    setStatus('Connected')
 
     // Listen for offerer's ICE candidates
     iceUnsubs.current.push(
@@ -194,6 +194,7 @@ const App = () => {
         joinCall={joinCall}
         joinId={joinId}
         setJoinId={setJoinId}
+        status={status}
       />
       {callId && (
         <div className="mb-2">
@@ -202,7 +203,6 @@ const App = () => {
           </span>
         </div>
       )}
-      {status && <div className="mb-2 text-blue-700">{status}</div>}
     </main>
   )
 }

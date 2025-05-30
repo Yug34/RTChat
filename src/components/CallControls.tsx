@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardTitle } from '@/components/ui/card'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Loader2Icon } from 'lucide-react'
 import { Info } from 'lucide-react'
 import React from 'react'
 
@@ -12,6 +13,7 @@ interface CallControlsProps {
   joinCall: () => void
   joinId: string
   setJoinId: (id: string) => void
+  status: 'Standby' | 'Joining' | 'Hosting' | 'Connected' | 'Waiting' | 'NotFound'
 }
 
 const CallControls: React.FC<CallControlsProps> = ({
@@ -21,30 +23,52 @@ const CallControls: React.FC<CallControlsProps> = ({
   joinCall,
   joinId,
   setJoinId,
+  status,
 }) => {
+  if (status === 'Waiting') {
+    return (
+      <Card className="flex flex-col p-6 gap-y-2 w-full max-w-[400px]">
+        <div className="flex w-full">
+          <Button disabled className="w-full">
+            Waiting for guest to join...
+            <Loader2Icon className="w-4 h-4 animate-spin" />
+          </Button>
+        </div>
+      </Card>
+    )
+  }
+
   return (
     <Card className="flex flex-col p-6 gap-y-2 w-full max-w-[400px]">
-      <CardTitle>RTChat</CardTitle>
       <div className="flex w-full">
-        <Button
-          onClick={startCall}
-          disabled={!isInitialized || role === 'answer'}
-          className="flex-1 rounded-r-none cursor-pointer"
-        >
-          Host a call
-        </Button>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button className="rounded-l-none">
-                <Info className="w-4 h-4" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Host a call and send your friend the Call ID to join your call.</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        {status === 'Hosting' ? (
+          <Button disabled className="w-full">
+            Creating call...
+            <Loader2Icon className="w-4 h-4 animate-spin" />
+          </Button>
+        ) : (
+          <>
+            <Button
+              onClick={startCall}
+              disabled={!isInitialized || role === 'answer'}
+              className="flex-1 rounded-r-none cursor-pointer"
+            >
+              Host a call
+            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button className="rounded-l-none">
+                    <Info className="w-4 h-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Host a call and send your friend the Call ID to join your call.</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </>
+        )}
       </div>
       <div className="flex items-center gap-x-4">
         <span className="h-[1px] w-[50%] bg-gray-400"></span>
