@@ -25,7 +25,7 @@ const App = () => {
   const [isPermissionGranted, setIsPermissionGranted] = useState(true)
 
   const selfVideoRef = useRef<HTMLVideoElement>(null)
-  const guestVideoRef = useRef<HTMLVideoElement>(null)
+  const remoteVideoRef = useRef<HTMLVideoElement>(null)
 
   // ICE listeners cleanup
   const iceUnsubs = useRef<(() => void)[]>([])
@@ -53,7 +53,7 @@ const App = () => {
     setStatus('Hosting')
     const pc = new RTCPeerConnection()
     const remote = new MediaStream()
-    guestVideoRef.current!.srcObject = remote
+    remoteVideoRef.current!.srcObject = remote
 
     // Add local tracks
     localStream!.getTracks().forEach((track) => {
@@ -113,7 +113,7 @@ const App = () => {
     setStatus('Joining')
     const pc = new RTCPeerConnection()
     const remote = new MediaStream()
-    guestVideoRef.current!.srcObject = remote
+    remoteVideoRef.current!.srcObject = remote
 
     // Add local tracks
     localStream!.getTracks().forEach((track) => {
@@ -174,7 +174,9 @@ const App = () => {
     <main className="flex flex-col items-center justify-center w-screen h-screen">
       <PermissionsDrawer isPermissionGranted={isPermissionGranted} />
       <video
-        className="absolute top-0 left-0 w-full h-full bg-black opacity-20 -z-10"
+        className={cn('absolute top-0 left-0 w-full h-full bg-black -z-10', {
+          'opacity-20': status !== 'Connected',
+        })}
         ref={selfVideoRef}
         autoPlay
         playsInline
@@ -183,7 +185,7 @@ const App = () => {
         className={cn('absolute top-4 left-4 w-[400px] h-[400px] bg-black', {
           hidden: !isRemoteStreamActive,
         })}
-        ref={guestVideoRef}
+        ref={remoteVideoRef}
         autoPlay
         playsInline
       />

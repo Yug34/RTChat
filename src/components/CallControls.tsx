@@ -5,7 +5,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { Loader2Icon } from 'lucide-react'
 import { Info, Clipboard, ClipboardCheck } from 'lucide-react'
 import { toast } from 'sonner'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 interface CallControlsProps {
   isInitialized: boolean
@@ -35,6 +35,14 @@ const CallControls: React.FC<CallControlsProps> = ({
     toast.success('Copied Call ID to clipboard!')
     setRecentlyCopied(true)
     setTimeout(() => setRecentlyCopied(false), 1500)
+  }
+
+  useEffect(() => {
+    console.log(status)
+  }, [status])
+
+  if (status === 'Connected') {
+    return null
   }
 
   if (status === 'Waiting') {
@@ -125,13 +133,25 @@ const CallControls: React.FC<CallControlsProps> = ({
           onChange={(e) => setJoinId(e.target.value)}
           disabled={role === 'offer'}
         />
-        <Button
-          className="rounded-l-none rounded-r-none cursor-pointer"
-          onClick={joinCall}
-          disabled={!isInitialized || !joinId || role === 'offer'}
-        >
-          Join call
-        </Button>
+        {status === 'Joining' ? (
+          <Button
+            className="rounded-l-none rounded-r-none cursor-pointer"
+            onClick={joinCall}
+            disabled
+          >
+            Joining...
+            <Loader2Icon className="w-4 h-4 animate-spin" />
+          </Button>
+        ) : (
+          <Button
+            className="rounded-l-none rounded-r-none cursor-pointer"
+            onClick={joinCall}
+            disabled={!isInitialized || !joinId || role === 'offer'}
+          >
+            Join call
+          </Button>
+        )}
+
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
