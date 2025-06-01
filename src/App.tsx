@@ -12,15 +12,14 @@ import { cn } from './lib/utils'
 import PermissionsDrawer from './components/PermissionsDrawer'
 import CallControls from './components/CallControls'
 import { toast } from 'sonner'
+import { CallStatus } from './types'
 
 const App = () => {
   const [isInitialized, setIsInitialized] = useState(false)
   const [callId, setCallId] = useState<string>('')
   const [joinId, setJoinId] = useState<string>('')
   const [role, setRole] = useState<'offer' | 'answer' | null>(null)
-  const [status, setStatus] = useState<
-    'Standby' | 'Joining' | 'Hosting' | 'Connected' | 'Waiting' | 'NotFound'
-  >('Standby')
+  const [status, setStatus] = useState<CallStatus>('Standby')
   const [isRemoteStreamActive, setIsRemoteStreamActive] = useState(false)
   const [isPermissionGranted, setIsPermissionGranted] = useState(true)
 
