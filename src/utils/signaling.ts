@@ -1,5 +1,15 @@
 import { db } from './firebase'
-import { collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc } from 'firebase/firestore'
+import {
+  collection,
+  doc,
+  onSnapshot,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  QuerySnapshot,
+  DocumentChange,
+  DocumentSnapshot,
+} from 'firebase/firestore'
 
 // Collection for calls
 type Candidate = RTCIceCandidateInit
@@ -18,7 +28,7 @@ export const createCall = async (offer: RTCSessionDescriptionInit) => {
 
 export const listenForAnswer = (callId: string, { onAnswer }: Callbacks) => {
   const callRef = doc(db, 'calls', callId)
-  return onSnapshot(callRef, (snapshot) => {
+  return onSnapshot(callRef, (snapshot: DocumentSnapshot) => {
     const data = snapshot.data()
     if (data?.answer && onAnswer) {
       onAnswer(data.answer)
@@ -46,8 +56,8 @@ export const listenForIceCandidates = (
   cb: (candidate: Candidate) => void,
 ) => {
   const candidatesRef = collection(db, 'calls', callId, `${role}Candidates`)
-  return onSnapshot(candidatesRef, (snapshot) => {
-    snapshot.docChanges().forEach((change) => {
+  return onSnapshot(candidatesRef, (snapshot: QuerySnapshot) => {
+    snapshot.docChanges().forEach((change: DocumentChange) => {
       if (change.type === 'added') {
         cb(change.doc.data() as Candidate)
       }
