@@ -5,16 +5,17 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { Loader2Icon } from 'lucide-react'
 import { Info, Clipboard, ClipboardCheck } from 'lucide-react'
 import { toast } from 'sonner'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
+import type { CallStatus, Role } from '@/types'
 
 interface CallControlsProps {
   isInitialized: boolean
-  role: 'offer' | 'answer' | null
+  role: Role | null
   startCall: () => void
   joinCall: () => void
   joinId: string
   setJoinId: (id: string) => void
-  status: 'Standby' | 'Joining' | 'Hosting' | 'Connected' | 'Waiting' | 'NotFound'
+  status: CallStatus
   callId: string
 }
 
@@ -36,10 +37,6 @@ const CallControls: React.FC<CallControlsProps> = ({
     setRecentlyCopied(true)
     setTimeout(() => setRecentlyCopied(false), 1500)
   }
-
-  useEffect(() => {
-    console.log(status)
-  }, [status])
 
   if (status === 'Connected') {
     return null

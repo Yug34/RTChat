@@ -7,4 +7,6 @@ type CallStatus =
   | 'NotFound' // Answer - call not found
 //   | 'Disconnected' // Answer, Offer - user disconnected
 
-export type { CallStatus }
+type Role = 'offer' | 'answer'
+
+export type { CallStatus, Role }
