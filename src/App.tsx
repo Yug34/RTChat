@@ -94,6 +94,7 @@ const App = () => {
     answerUnsub.current = listenForAnswer(newCallId, {
       onAnswer: async (answer) => {
         await pc.setRemoteDescription(new RTCSessionDescription(answer))
+        toast.success('A guest has joined the call!')
         setStatus('Connected')
       },
     })
@@ -173,15 +174,18 @@ const App = () => {
     <main className="flex flex-col items-center justify-center w-screen h-screen">
       <PermissionsDrawer isPermissionGranted={isPermissionGranted} />
       <video
-        className={cn('absolute top-0 left-0 w-full h-full bg-black -z-10', {
-          'opacity-20': status !== 'Connected',
+        className={cn('', {
+          'absolute top-4 left-4 w-[400px] h-[400px] bg-black': status === 'Connected',
+          'absolute top-0 left-0 w-full h-full bg-black -z-10 opacity-70': status !== 'Connected',
         })}
         ref={selfVideoRef}
         autoPlay
         playsInline
       />
       <video
-        className={cn('absolute top-4 left-4 w-[400px] h-[400px] bg-black', {
+        className={cn('', {
+          'absolute top-4 left-4 w-[400px] h-[400px] bg-black': status !== 'Connected',
+          'absolute top-0 left-0 w-full h-full bg-black -z-10': status === 'Connected',
           hidden: !isRemoteStreamActive,
         })}
         ref={remoteVideoRef}
