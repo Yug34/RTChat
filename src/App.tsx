@@ -10,9 +10,10 @@ import { doc, DocumentData, getDoc } from 'firebase/firestore'
 import { db } from './utils/firebase'
 import { cn } from './lib/utils'
 import PermissionsDrawer from './components/PermissionsDrawer'
-import CallControls from './components/CallControls'
+import CallCreation from './components/CallCreation'
 import { toast } from 'sonner'
 import { CallStatus } from './types'
+import CallControls from './components/CallControls'
 
 const App = () => {
   const [isInitialized, setIsInitialized] = useState(false)
@@ -171,36 +172,40 @@ const App = () => {
   }, [])
 
   return (
-    <main className="flex flex-col items-center justify-center w-screen h-screen">
+    <main className="flex flex-col items-center justify-center w-screen h-screen max-h-screen max-w-screen">
       <PermissionsDrawer isPermissionGranted={isPermissionGranted} />
+      <div className="flex flex-col items-center justify-center w-full h-full">
+        <CallCreation
+          isInitialized={isInitialized}
+          role={role}
+          startCall={startCall}
+          joinCall={joinCall}
+          joinId={joinId}
+          setJoinId={setJoinId}
+          status={status}
+          callId={callId}
+        />
+        <video
+          className={cn({
+            'absolute bottom-4 right-4 w-[400px] h-[400px] bg-black': status !== 'Connected',
+            'w-full h-full bg-black -z-10': status === 'Connected',
+            hidden: !isRemoteStreamActive,
+          })}
+          ref={remoteVideoRef}
+          autoPlay
+          playsInline
+        />
+        <CallControls status={status} />
+      </div>
       <video
-        className={cn('', {
-          'absolute top-4 left-4 w-[400px] h-[400px] bg-black': status === 'Connected',
-          'absolute top-0 left-0 w-full h-full bg-black -z-10 opacity-70': status !== 'Connected',
+        className={cn({
+          'absolute bottom-4 right-4 w-[400px] h-[400px] bg-black': status === 'Connected',
+          'absolute bottom-0 right-0 w-full h-full bg-black -z-10 opacity-70':
+            status !== 'Connected',
         })}
         ref={selfVideoRef}
         autoPlay
         playsInline
-      />
-      <video
-        className={cn('', {
-          'absolute top-4 left-4 w-[400px] h-[400px] bg-black': status !== 'Connected',
-          'absolute top-0 left-0 w-full h-full bg-black -z-10': status === 'Connected',
-          hidden: !isRemoteStreamActive,
-        })}
-        ref={remoteVideoRef}
-        autoPlay
-        playsInline
-      />
-      <CallControls
-        isInitialized={isInitialized}
-        role={role}
-        startCall={startCall}
-        joinCall={joinCall}
-        joinId={joinId}
-        setJoinId={setJoinId}
-        status={status}
-        callId={callId}
       />
     </main>
   )
