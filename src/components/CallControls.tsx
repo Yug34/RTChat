@@ -4,7 +4,6 @@ import React, { useState } from 'react'
 import { Card } from './ui/card'
 import { Toggle } from '@/components/ui/toggle'
 import { LogOut, Mic, MicOff, Video, VideoOff } from 'lucide-react'
-import { toast } from 'sonner'
 
 type CallControlsProps = {
   status: CallStatus
