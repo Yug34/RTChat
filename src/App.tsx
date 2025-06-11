@@ -141,6 +141,7 @@ const App = () => {
     const docSnap = await getDoc(docRef)
     if (!docSnap.exists()) {
       setStatus('NotFound')
+      toast.error('Call not found! Please check the call ID.')
       setRole(null)
       return
     }
@@ -151,6 +152,7 @@ const App = () => {
     await pc.setLocalDescription(answer)
     await setAnswer(joinId, answer)
     setCallId(joinId)
+    toast.success('You have joined the call!')
     setStatus('Connected')
 
     // Listen for offerer's ICE candidates
