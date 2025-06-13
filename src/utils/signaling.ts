@@ -1,4 +1,5 @@
 import { db } from './firebase'
+import { generate, count } from 'random-words'
 import {
   collection,
   doc,
@@ -9,6 +10,7 @@ import {
   QuerySnapshot,
   DocumentChange,
   DocumentSnapshot,
+  setDoc,
 } from 'firebase/firestore'
 
 // Collection for calls
@@ -20,10 +22,12 @@ type Callbacks = {
 }
 
 export const createCall = async (offer: RTCSessionDescriptionInit) => {
-  // Create a new call document
-  const callDoc = await addDoc(collection(db, 'calls'), { offer })
+  const callId = generate({ min: 2, max: 10, join: '-', exactly: 3 })
+  const callDoc = doc(db, 'calls', callId)
+  await setDoc(callDoc, { offer })
+
   const candidatesCollection = collection(callDoc, 'candidates')
-  return { callId: callDoc.id, candidatesCollection, callDoc }
+  return { callId, candidatesCollection, callDoc }
 }
 
 export const listenForAnswer = (callId: string, { onAnswer }: Callbacks) => {

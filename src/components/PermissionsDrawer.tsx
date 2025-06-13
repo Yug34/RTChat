@@ -20,10 +20,11 @@ const PermissionsDrawer = ({ isPermissionGranted }: PermissionDrawerProps) => {
           <DrawerTitle className="text-xl text-red-500">⚠️ Missing Permissions</DrawerTitle>
         </DrawerHeader>
         <DrawerFooter className="pt-0">
-          <DrawerDescription className="text-lg">
-            Please grant permissions to use your camera and microphone, and click on Refresh!
+          <DrawerDescription className="text-md">
+            Please grant permissions to use your camera and microphone, and click on the{' '}
+            <strong>Refresh</strong> button!
           </DrawerDescription>
-          <Button onClick={() => window.location.reload()} className="cursor-pointer">
+          <Button onClick={() => window.location.reload()} className="mt-2 cursor-pointer">
             Refresh
           </Button>
         </DrawerFooter>

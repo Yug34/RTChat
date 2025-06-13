@@ -14,7 +14,6 @@ import CallCreation from './components/CallCreation'
 import { toast } from 'sonner'
 import CallControls from './components/CallControls'
 import useChatStore from './store/core'
-import type { ChatStoreState } from './store/core'
 
 const App = () => {
   const {
@@ -32,7 +31,7 @@ const App = () => {
     setIsRemoteStreamActive,
     isPermissionGranted,
     setIsPermissionGranted,
-  } = useChatStore() as ChatStoreState
+  } = useChatStore()
 
   const selfVideoRef = useRef<HTMLVideoElement>(null)
   const remoteVideoRef = useRef<HTMLVideoElement>(null)

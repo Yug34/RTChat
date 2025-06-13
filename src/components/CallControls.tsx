@@ -1,5 +1,5 @@
 import { CallStatus } from '@/types'
-import React, { useState } from 'react'
+import React from 'react'
 import { Card } from './ui/card'
 import { Toggle } from '@/components/ui/toggle'
 import { Mic, MicOff, Video, VideoOff, LogOut } from 'lucide-react'

@@ -63,7 +63,7 @@ const CallControls: React.FC<CallCreationProps> = ({
             Copy Call ID
           </Button>
           <Button
-            className="rounded-none cursor-pointer"
+            className="flex-1 rounded-none cursor-pointer"
             onClick={copyToClipboard}
             variant="secondary"
           >
