@@ -1,9 +1,20 @@
 import { CallStatus } from '@/types'
-import { Button } from './ui/button'
 import React, { useState } from 'react'
 import { Card } from './ui/card'
 import { Toggle } from '@/components/ui/toggle'
-import { LogOut, Mic, MicOff, Video, VideoOff } from 'lucide-react'
+import { Mic, MicOff, Video, VideoOff, LogOut } from 'lucide-react'
+import { Button } from './ui/button'
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from './ui/alert-dialog'
 
 type CallControlsProps = {
   status: CallStatus
@@ -25,8 +36,12 @@ const CallControls: React.FC<CallControlsProps> = ({ status }) => {
     return null
   }
 
+  const onLeave = () => {
+    window.location.reload()
+  }
+
   return (
-    <Card className="flex flex-row justify-center w-full py-2">
+    <Card className="flex flex-row justify-center w-full gap-2 py-2">
       <Toggle
         className="cursor-pointer"
         variant="outline"
@@ -43,9 +58,30 @@ const CallControls: React.FC<CallControlsProps> = ({ status }) => {
       >
         {isCameraOn ? <Video /> : <VideoOff className="text-red-500" />}
       </Toggle>
-      <Button className="cursor-pointer" variant="destructive" aria-label="Leave Call">
-        <LogOut className="text-white" />
-      </Button>
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button variant="destructive" className="flex items-center gap-1 ml-2">
+            <LogOut className="w-4 h-4" />
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Leave Call?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to leave the call? You will be disconnected from the session.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={onLeave}
+              className="text-white bg-destructive hover:bg-destructive/90"
+            >
+              Leave
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Card>
   )
 }
