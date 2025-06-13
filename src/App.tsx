@@ -12,17 +12,27 @@ import { cn } from './lib/utils'
 import PermissionsDrawer from './components/PermissionsDrawer'
 import CallCreation from './components/CallCreation'
 import { toast } from 'sonner'
-import { CallStatus } from './types'
 import CallControls from './components/CallControls'
+import useChatStore from './store/core'
+import type { ChatStoreState } from './store/core'
 
 const App = () => {
-  const [isInitialized, setIsInitialized] = useState(false)
-  const [callId, setCallId] = useState<string>('')
-  const [joinId, setJoinId] = useState<string>('')
-  const [role, setRole] = useState<'offer' | 'answer' | null>(null)
-  const [status, setStatus] = useState<CallStatus>('Standby')
-  const [isRemoteStreamActive, setIsRemoteStreamActive] = useState(false)
-  const [isPermissionGranted, setIsPermissionGranted] = useState(true)
+  const {
+    isInitialized,
+    setIsInitialized,
+    callId,
+    setCallId,
+    joinId,
+    setJoinId,
+    role,
+    setRole,
+    status,
+    setStatus,
+    isRemoteStreamActive,
+    setIsRemoteStreamActive,
+    isPermissionGranted,
+    setIsPermissionGranted,
+  } = useChatStore() as ChatStoreState
 
   const selfVideoRef = useRef<HTMLVideoElement>(null)
   const remoteVideoRef = useRef<HTMLVideoElement>(null)

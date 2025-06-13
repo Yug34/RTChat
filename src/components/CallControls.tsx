@@ -15,14 +15,14 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
 } from './ui/alert-dialog'
+import useChatStore from '@/store/core'
 
 type CallControlsProps = {
   status: CallStatus
 }
 
-const CallControls: React.FC<CallControlsProps> = ({ status }) => {
-  const [isMicOn, setIsMicOn] = useState(true)
-  const [isCameraOn, setIsCameraOn] = useState(true)
+const CallControls: React.FC<CallControlsProps> = () => {
+  const { isMicOn, setIsMicOn, isCameraOn, setIsCameraOn, status } = useChatStore()
 
   const toggleMic = () => {
     setIsMicOn(!isMicOn)
@@ -32,12 +32,12 @@ const CallControls: React.FC<CallControlsProps> = ({ status }) => {
     setIsCameraOn(!isCameraOn)
   }
 
-  if (status !== 'Connected') {
-    return null
-  }
-
   const onLeave = () => {
     window.location.reload()
+  }
+
+  if (status !== 'Connected') {
+    return null
   }
 
   return (
