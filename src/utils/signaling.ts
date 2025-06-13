@@ -1,5 +1,5 @@
 import { db } from './firebase'
-import { generate, count } from 'random-words'
+import { generate } from 'random-words'
 import {
   collection,
   doc,
