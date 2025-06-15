@@ -21,13 +21,14 @@ const SelfVideo: React.FC<SelfVideoProps> = ({ selfVideoRef }) => {
       ref={setNodeRef}
       style={style}
       className={cn({
-        'absolute bottom-4 right-4 w-[400px] h-[400px] bg-black': status === 'Connected',
-        'absolute bottom-0 right-0 w-full h-full bg-black -z-10 opacity-70': status !== 'Connected',
+        'absolute bottom-4 right-4 w-[400px] h-[400px] bg-transparent': status === 'Connected',
+        'absolute bottom-0 right-0 w-full h-full -z-10 opacity-70 bg-transparent':
+          status !== 'Connected',
       })}
       {...attributes}
       {...listeners}
     >
-      <video className="w-full h-full" ref={selfVideoRef} autoPlay playsInline />
+      <video className="w-full h-full bg-black" ref={selfVideoRef} autoPlay playsInline />
     </div>
   )
 }
