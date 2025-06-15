@@ -8,7 +8,6 @@ import {
 } from './utils/signaling'
 import { doc, DocumentData, getDoc } from 'firebase/firestore'
 import { db } from './utils/firebase'
-import { cn } from './lib/utils'
 import PermissionsDrawer from './components/PermissionsDrawer'
 import CallCreation from './components/CallCreation'
 import { toast } from 'sonner'
@@ -24,9 +23,7 @@ const App = () => {
     setCallId,
     joinId,
     setRole,
-    status,
     setStatus,
-    isRemoteStreamActive,
     setIsRemoteStreamActive,
     isPermissionGranted,
     setIsPermissionGranted,
