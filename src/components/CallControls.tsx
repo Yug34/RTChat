@@ -17,11 +17,7 @@ import {
 } from './ui/alert-dialog'
 import useChatStore from '@/store/core'
 
-type CallControlsProps = {
-  status: CallStatus
-}
-
-const CallControls: React.FC<CallControlsProps> = () => {
+const CallControls: React.FC = () => {
   const { isMicOn, setIsMicOn, isCameraOn, setIsCameraOn, status } = useChatStore()
 
   const toggleMic = () => {

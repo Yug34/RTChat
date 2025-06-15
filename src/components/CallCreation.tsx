@@ -6,30 +6,17 @@ import { Loader2Icon } from 'lucide-react'
 import { Info, Clipboard, ClipboardCheck } from 'lucide-react'
 import { toast } from 'sonner'
 import React, { useState } from 'react'
-import type { CallStatus, Role } from '@/types'
+import useChatStore from '@/store/core'
 
 interface CallCreationProps {
-  isInitialized: boolean
-  role: Role | null
   startCall: () => void
   joinCall: () => void
-  joinId: string
-  setJoinId: (id: string) => void
-  status: CallStatus
-  callId: string
 }
 
-const CallControls: React.FC<CallCreationProps> = ({
-  isInitialized,
-  role,
-  startCall,
-  joinCall,
-  joinId,
-  setJoinId,
-  status,
-  callId,
-}) => {
+const CallControls: React.FC<CallCreationProps> = ({ startCall, joinCall }) => {
   const [recentlyCopied, setRecentlyCopied] = useState(false)
+
+  const { isInitialized, callId, joinId, setJoinId, role, status } = useChatStore()
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(callId)

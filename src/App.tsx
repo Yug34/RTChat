@@ -14,16 +14,15 @@ import CallCreation from './components/CallCreation'
 import { toast } from 'sonner'
 import CallControls from './components/CallControls'
 import useChatStore from './store/core'
+import RemoteVideo from './components/RemoteVideo'
+import SelfVideo from './components/SelfVideo'
 
 const App = () => {
   const {
-    isInitialized,
     setIsInitialized,
     callId,
     setCallId,
     joinId,
-    setJoinId,
-    role,
     setRole,
     status,
     setStatus,
@@ -186,38 +185,11 @@ const App = () => {
     <main className="flex flex-col items-center justify-center w-screen h-screen max-h-screen max-w-screen">
       <PermissionsDrawer isPermissionGranted={isPermissionGranted} />
       <div className="flex flex-col items-center justify-center w-full h-full">
-        <CallCreation
-          isInitialized={isInitialized}
-          role={role}
-          startCall={startCall}
-          joinCall={joinCall}
-          joinId={joinId}
-          setJoinId={setJoinId}
-          status={status}
-          callId={callId}
-        />
-        <video
-          className={cn({
-            'absolute bottom-4 right-4 w-[400px] h-[400px] bg-black': status !== 'Connected',
-            'w-full h-full bg-black -z-10': status === 'Connected',
-            hidden: !isRemoteStreamActive,
-          })}
-          ref={remoteVideoRef}
-          autoPlay
-          playsInline
-        />
-        <CallControls status={status} />
+        <CallCreation startCall={startCall} joinCall={joinCall} />
+        <RemoteVideo remoteVideoRef={remoteVideoRef} />
+        <CallControls />
       </div>
-      <video
-        className={cn({
-          'absolute bottom-4 right-4 w-[400px] h-[400px] bg-black': status === 'Connected',
-          'absolute bottom-0 right-0 w-full h-full bg-black -z-10 opacity-70':
-            status !== 'Connected',
-        })}
-        ref={selfVideoRef}
-        autoPlay
-        playsInline
-      />
+      <SelfVideo selfVideoRef={selfVideoRef} />
     </main>
   )
 }
