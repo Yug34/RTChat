@@ -15,6 +15,7 @@ import CallControls from './components/CallControls'
 import useChatStore from './store/core'
 import RemoteVideo from './components/RemoteVideo'
 import SelfVideo from './components/SelfVideo'
+import Navbar from './components/Navbar'
 
 const App = () => {
   const {
@@ -179,7 +180,8 @@ const App = () => {
   }, [])
 
   return (
-    <main className="flex flex-col items-center justify-center w-screen h-screen max-h-screen max-w-screen">
+    <main className="flex flex-col items-center justify-center w-screen h-screen max-h-screen max-w-screen overflow-hidden">
+      <Navbar />
       <PermissionsDrawer isPermissionGranted={isPermissionGranted} />
       <div className="flex flex-col items-center justify-center w-full h-full">
         <CallCreation startCall={startCall} joinCall={joinCall} />
