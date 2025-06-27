@@ -16,6 +16,7 @@ import useChatStore from './store/core'
 import RemoteVideo from './components/RemoteVideo'
 import SelfVideo from './components/SelfVideo'
 import Navbar from './components/Navbar'
+import { Card } from './components/ui/card'
 
 const App = () => {
   const {
@@ -184,11 +185,14 @@ const App = () => {
       <Navbar />
       <PermissionsDrawer isPermissionGranted={isPermissionGranted} />
       <div className="flex flex-col items-center justify-center w-full h-full">
-        <CallCreation startCall={startCall} joinCall={joinCall} />
+        <Card className="flex flex-row items-center justify-center w-fit max-h-[448px] gap-6 p-6 shadow-none">
+          <SelfVideo selfVideoRef={selfVideoRef} />
+          <span className="w-[1px] h-full bg-gray-400"></span>
+          <CallCreation startCall={startCall} joinCall={joinCall} />
+        </Card>
         <RemoteVideo remoteVideoRef={remoteVideoRef} />
-        <CallControls />
       </div>
-      <SelfVideo selfVideoRef={selfVideoRef} />
+      <CallControls />
     </main>
   )
 }

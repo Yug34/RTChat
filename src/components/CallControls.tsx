@@ -31,10 +31,6 @@ const CallControls: React.FC = () => {
     window.location.reload()
   }
 
-  if (status !== 'Connected') {
-    return null
-  }
-
   return (
     <Card className="flex flex-row justify-center w-full gap-2 py-2">
       <Toggle
@@ -42,6 +38,7 @@ const CallControls: React.FC = () => {
         variant="outline"
         aria-label="Toggle Microphone"
         onClick={toggleMic}
+        disabled={status !== 'Connected'}
       >
         {isMicOn ? <Mic /> : <MicOff className="text-red-500" />}
       </Toggle>
@@ -50,12 +47,13 @@ const CallControls: React.FC = () => {
         variant="outline"
         aria-label="Toggle Camera"
         onClick={toggleCamera}
+        disabled={status !== 'Connected'}
       >
         {isCameraOn ? <Video /> : <VideoOff className="text-red-500" />}
       </Toggle>
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <Button variant="destructive" className="flex items-center gap-1 ml-2">
+          <Button variant="destructive" className="flex items-center gap-1 ml-2" disabled={status !== 'Connected'}>
             <LogOut className="w-4 h-4" />
           </Button>
         </AlertDialogTrigger>
