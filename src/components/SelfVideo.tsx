@@ -43,23 +43,21 @@ const SelfVideo: React.FC<SelfVideoProps> = ({ selfVideoRef }) => {
         autoPlay
         playsInline
       />
-      <div className="relative bottom-0 left-0 w-full h-10 rounded-xl">
-        <div className="flex items-center justify-center w-full h-full bg-black opacity-50 rounded-xl">
+      <div className="relative bottom-[48px] left-0 w-full h-10 rounded-xl z-20">
+        <div className="flex items-center justify-center w-full h-full bg-black rounded-xl gap-x-2 py-2">
           <Toggle
-            className="cursor-pointer"
+            className="cursor-pointer z-30"
             variant="outline"
             aria-label="Toggle Microphone"
             onClick={toggleMic}
-            disabled={status !== 'Connected'}
           >
             {isMicOn ? <Mic /> : <MicOff className="text-red-500" />}
           </Toggle>
           <Toggle
-            className="cursor-pointer"
+            className="cursor-pointer z-30"
             variant="outline"
             aria-label="Toggle Camera"
             onClick={toggleCamera}
-            disabled={status !== 'Connected'}
           >
             {isCameraOn ? <Video /> : <VideoOff className="text-red-500" />}
           </Toggle>
