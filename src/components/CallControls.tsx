@@ -32,7 +32,7 @@ const CallControls: React.FC = () => {
   }
 
   return (
-    <Card className="flex flex-row justify-center w-full gap-2 py-2">
+    <Card className="flex flex-row justify-center w-full gap-4 py-2">
       <Toggle
         className="cursor-pointer"
         variant="outline"
@@ -51,9 +51,10 @@ const CallControls: React.FC = () => {
       >
         {isCameraOn ? <Video /> : <VideoOff className="text-red-500" />}
       </Toggle>
+      <span className="w-[1px] h-full bg-gray-500"></span>
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <Button variant="destructive" className="flex items-center gap-1 ml-2" disabled={status !== 'Connected'}>
+          <Button variant="destructive" className="flex items-center" disabled={status !== 'Connected'}>
             <LogOut className="w-4 h-4" />
           </Button>
         </AlertDialogTrigger>
