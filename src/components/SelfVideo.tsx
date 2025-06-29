@@ -1,6 +1,7 @@
 import { cn } from '@/lib/utils'
 import useChatStore from '@/store/core'
 import { useDraggable } from '@dnd-kit/core'
+import { GripHorizontal } from 'lucide-react'
 
 type SelfVideoProps = {
   selfVideoRef: React.RefObject<HTMLVideoElement | null>
@@ -26,18 +27,23 @@ const SelfVideo: React.FC<SelfVideoProps> = ({ selfVideoRef }) => {
       className={cn(
         {
           'hidden': status !== 'Connected',
-          'absolute bottom-10 right-10 bg-transparent w-[400px] h-[400px] border border-gray-400': status === 'Connected',
+          'absolute bottom-10 right-10 bg-transparent w-[400px] h-[416px]': status === 'Connected',
         },
       )}
       {...(status === 'Connected' ? attributes : {})}
       {...(status === 'Connected' ? listeners : {})}
     >
-      <video
-        className="w-full h-full bg-black"
-        ref={selfVideoRef}
-        autoPlay
-        playsInline
-      />
+      <div className="flex flex-col w-full h-full bg-black border border-gray-400 rounded-xl">
+        <video
+          className="w-full h-[400px] bg-black rounded-t-xl"
+          ref={selfVideoRef}
+          autoPlay
+          playsInline
+        />
+        <div className="flex flex-row items-center justify-center w-full h-4 bg-black rounded-b-xl mb-2">
+          <GripHorizontal className="cursor-grab" />
+        </div>
+      </div>
     </div>
   )
 }
