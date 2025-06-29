@@ -9,14 +9,13 @@ import {
 import { doc, DocumentData, getDoc } from 'firebase/firestore'
 import { db } from './utils/firebase'
 import PermissionsDrawer from './components/PermissionsDrawer'
-import CallCreation from './components/CallCreation'
 import { toast } from 'sonner'
 import CallControls from './components/CallControls'
 import useChatStore from './store/core'
 import RemoteVideo from './components/RemoteVideo'
-import SelfVideo from './components/SelfVideo'
 import Navbar from './components/Navbar'
-import { Card } from './components/ui/card'
+import VideoPreview from './components/VideoPreview'
+import SelfVideo from './components/SelfVideo'
 
 const App = () => {
   const {
@@ -31,6 +30,7 @@ const App = () => {
     setIsPermissionGranted,
   } = useChatStore()
 
+  const previewVideoRef = useRef<HTMLVideoElement>(null)
   const selfVideoRef = useRef<HTMLVideoElement>(null)
   const remoteVideoRef = useRef<HTMLVideoElement>(null)
 
@@ -46,10 +46,12 @@ const App = () => {
         video: true,
         audio: false,
       })
+      previewVideoRef.current!.srcObject = stream
       selfVideoRef.current!.srcObject = stream
       setLocalStream(stream)
       setIsInitialized(true)
-    } catch {
+    } catch (error) {
+      console.log(error)
       setIsPermissionGranted(false)
     }
   }
@@ -183,16 +185,11 @@ const App = () => {
   return (
     <main className="flex flex-col items-center justify-center w-screen h-screen max-h-screen max-w-screen overflow-hidden">
       <Navbar />
-      <PermissionsDrawer isPermissionGranted={isPermissionGranted} />
-      <div className="flex flex-col items-center justify-center w-full h-full">
-        <Card className="flex flex-row items-center justify-center w-fit max-h-[448px] gap-6 p-6 shadow-none">
-          <SelfVideo selfVideoRef={selfVideoRef} />
-          <span className="w-[1px] h-full bg-gray-400"></span>
-          <CallCreation startCall={startCall} joinCall={joinCall} />
-        </Card>
-        <RemoteVideo remoteVideoRef={remoteVideoRef} />
-      </div>
+      <VideoPreview previewVideoRef={previewVideoRef} startCall={startCall} joinCall={joinCall} />
+      <SelfVideo selfVideoRef={selfVideoRef} />
+      <RemoteVideo remoteVideoRef={remoteVideoRef} />
       <CallControls />
+      <PermissionsDrawer isPermissionGranted={isPermissionGranted} />
     </main>
   )
 }
