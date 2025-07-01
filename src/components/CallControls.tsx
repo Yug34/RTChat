@@ -1,5 +1,4 @@
 import React from 'react'
-import { Card } from './ui/card'
 import { Toggle } from '@/components/ui/toggle'
 import { Mic, MicOff, Video, VideoOff, LogOut } from 'lucide-react'
 import { Button } from './ui/button'
@@ -20,13 +19,11 @@ const CallControls: React.FC = () => {
   const { isMicOn, setIsMicOn, isCameraOn, setIsCameraOn, status } = useChatStore()
 
   const toggleMic = () => setIsMicOn(!isMicOn)
-
   const toggleCamera = () => setIsCameraOn(!isCameraOn)
-
   const onLeave = () => window.location.reload()
 
   return (
-    <Card className="flex flex-row justify-center w-full gap-4 py-2 rounded-none border-none border-t">
+    <div className="flex flex-row justify-center w-full gap-4 py-2 rounded-none border-t bg-card">
       <Toggle
         className="cursor-pointer"
         variant="outline"
@@ -48,7 +45,11 @@ const CallControls: React.FC = () => {
       <span className="w-[1px] h-full bg-gray-500"></span>
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <Button variant="destructive" className="flex items-center" disabled={status !== 'Connected'}>
+          <Button
+            variant="destructive"
+            className="flex items-center"
+            disabled={status !== 'Connected'}
+          >
             <LogOut className="w-4 h-4" />
           </Button>
         </AlertDialogTrigger>
@@ -70,7 +71,7 @@ const CallControls: React.FC = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </Card>
+    </div>
   )
 }
 
