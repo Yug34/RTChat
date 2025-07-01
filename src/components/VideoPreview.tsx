@@ -25,12 +25,19 @@ const VideoPreview = ({ previewVideoRef, startCall, joinCall }: VideoPreviewProp
       <div
       className={'w-[400px] h-[400px] bg-transparent rounded-l-xl rounded-r-none border border-gray-400'}
     >
-      <video
-        className="w-full h-full bg-black rounded-l-xl rounded-r-none"
-        ref={previewVideoRef}
-        autoPlay
-        playsInline
-      />
+      {isCameraOn ? (
+        <video
+          className="w-full h-full bg-black rounded-l-xl rounded-r-none"
+          ref={previewVideoRef}
+          autoPlay
+          playsInline
+        />
+      ) : (
+        <div className="w-full h-full bg-black rounded-l-xl rounded-r-none flex flex-col items-center justify-center">
+          <span className="text-white text-xl font-bold">No camera</span>
+          <span className="text-white font-bold">Just a ✨ beautiful ✨ human</span>
+        </div>
+      )}
       <div className="relative bottom-[48px] left-0 w-full h-10 rounded-xl z-20">
         <div className="flex items-center justify-center w-full h-full bg-black rounded-xl gap-x-2 py-2">
           <Toggle

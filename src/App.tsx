@@ -19,6 +19,7 @@ import SelfVideo from './components/SelfVideo'
 
 const App = () => {
   const {
+    isCameraOn,
     setIsInitialized,
     callId,
     setCallId,
@@ -26,7 +27,6 @@ const App = () => {
     setRole,
     setStatus,
     setIsRemoteStreamActive,
-    isPermissionGranted,
     setIsPermissionGranted,
   } = useChatStore()
 
@@ -182,6 +182,12 @@ const App = () => {
     }
   }, [])
 
+  useEffect(() => {
+    if (isCameraOn) {
+      previewVideoRef.current!.srcObject = localStream!
+    }
+  }, [isCameraOn, localStream])
+
   return (
     <main className="flex flex-col items-center justify-center w-screen h-screen max-h-screen max-w-screen overflow-hidden">
       <Navbar />
@@ -189,7 +195,7 @@ const App = () => {
       <SelfVideo selfVideoRef={selfVideoRef} />
       <RemoteVideo remoteVideoRef={remoteVideoRef} />
       <CallControls />
-      <PermissionsDrawer isPermissionGranted={isPermissionGranted} />
+      <PermissionsDrawer />
     </main>
   )
 }

@@ -19,17 +19,11 @@ import useChatStore from '@/store/core'
 const CallControls: React.FC = () => {
   const { isMicOn, setIsMicOn, isCameraOn, setIsCameraOn, status } = useChatStore()
 
-  const toggleMic = () => {
-    setIsMicOn(!isMicOn)
-  }
+  const toggleMic = () => setIsMicOn(!isMicOn)
 
-  const toggleCamera = () => {
-    setIsCameraOn(!isCameraOn)
-  }
+  const toggleCamera = () => setIsCameraOn(!isCameraOn)
 
-  const onLeave = () => {
-    window.location.reload()
-  }
+  const onLeave = () => window.location.reload()
 
   return (
     <Card className="flex flex-row justify-center w-full gap-4 py-2 rounded-none border-none border-t">

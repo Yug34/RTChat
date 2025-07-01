@@ -1,3 +1,4 @@
+import useChatStore from '@/store/core'
 import { Button } from './ui/button'
 import {
   Drawer,
@@ -8,11 +9,9 @@ import {
   DrawerTitle,
 } from './ui/drawer'
 
-interface PermissionDrawerProps {
-  isPermissionGranted: boolean
-}
+const PermissionsDrawer = () => {
+  const { isPermissionGranted } = useChatStore()
 
-const PermissionsDrawer = ({ isPermissionGranted }: PermissionDrawerProps) => {
   return (
     <Drawer open={!isPermissionGranted}>
       <DrawerContent>

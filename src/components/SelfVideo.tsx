@@ -8,7 +8,7 @@ type SelfVideoProps = {
 }
 
 const SelfVideo: React.FC<SelfVideoProps> = ({ selfVideoRef }) => {
-  const { status } = useChatStore()
+  const { status, isCameraOn } = useChatStore()
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: 'self-video',
     disabled: status !== 'Connected',
@@ -34,15 +34,23 @@ const SelfVideo: React.FC<SelfVideoProps> = ({ selfVideoRef }) => {
       {...(status === 'Connected' ? listeners : {})}
     >
       <div className="flex flex-col w-full h-full bg-black border border-gray-400 rounded-xl">
-        <video
-          className="w-full h-[400px] bg-black rounded-t-xl"
-          ref={selfVideoRef}
-          autoPlay
-          playsInline
-        />
-        <div className="flex flex-row items-center justify-center w-full h-4 bg-black rounded-b-xl mb-2">
-          <GripHorizontal className="cursor-grab" />
-        </div>
+        {isCameraOn ? (
+          <>
+            <video
+              className="w-full h-[400px] bg-black rounded-t-xl"
+              ref={selfVideoRef}
+              autoPlay
+              playsInline
+            />
+            <div className="flex flex-row items-center justify-center w-full h-4 bg-black rounded-b-xl mb-2">
+              <GripHorizontal className="cursor-grab" />
+            </div>
+          </>
+        ) : (
+          <div className="flex w-full h-full justify-center items-center bg-[#202124] rounded-xl">
+            <span className="text-white">Camera is off</span>
+          </div>
+        )}
       </div>
     </div>
   )
