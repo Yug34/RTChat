@@ -19,6 +19,7 @@ import SelfVideo from './components/SelfVideo'
 
 const App = () => {
   const {
+    status,
     isCameraOn,
     setIsInitialized,
     callId,
@@ -184,7 +185,11 @@ const App = () => {
 
   useEffect(() => {
     if (isCameraOn) {
-      previewVideoRef.current!.srcObject = localStream!
+      if (status === 'Connected') {
+        selfVideoRef.current!.srcObject = localStream!
+      } else {
+        previewVideoRef.current!.srcObject = localStream!
+      }
     }
   }, [isCameraOn, localStream])
 

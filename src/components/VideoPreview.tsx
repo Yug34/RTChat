@@ -33,13 +33,15 @@ const VideoPreview = ({ previewVideoRef, startCall, joinCall }: VideoPreviewProp
           playsInline
         />
       ) : (
-        <div className="w-full h-full bg-black rounded-l-xl rounded-r-none flex flex-col items-center justify-center">
-          <span className="text-white text-xl font-bold">No camera</span>
-          <span className="text-white font-bold">Just a ✨ beautiful ✨ human</span>
+        <div className="w-full h-full bg-[#202124] text-white rounded-l-xl rounded-r-none flex flex-col items-center justify-center">
+          <span className="text-lg font-bold">No camera</span>
+          <span className="text-md">
+            Just a ✨ <span className='italic'>beautiful</span> ✨ human
+          </span>
         </div>
       )}
-      <div className="relative bottom-[48px] left-0 w-full h-10 rounded-xl z-20">
-        <div className="flex items-center justify-center w-full h-full bg-black rounded-xl gap-x-2 py-2">
+      <div className="relative bottom-[48px] left-0 w-full h-10 rounded-xl z-20 bg-transparent">
+        <div className="flex items-center justify-center w-full h-full rounded-xl gap-x-2 py-2">
           <Toggle
             className="cursor-pointer z-30"
             variant="outline"
