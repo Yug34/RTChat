@@ -16,6 +16,9 @@ import RemoteVideo from './components/RemoteVideo'
 import Navbar from './components/Navbar'
 import VideoPreview from './components/VideoPreview'
 import SelfVideo from './components/SelfVideo'
+import { DndContext, DragEndEvent } from '@dnd-kit/core'
+import { restrictToWindowEdges } from '@dnd-kit/modifiers'
+import DroppableZones from './components/DroppableZones'
 
 const App = () => {
   const {
@@ -34,6 +37,8 @@ const App = () => {
   const previewVideoRef = useRef<HTMLVideoElement>(null)
   const selfVideoRef = useRef<HTMLVideoElement>(null)
   const remoteVideoRef = useRef<HTMLVideoElement>(null)
+
+  const [parent, setParent] = useState<string>('video-preview-4')
 
   // ICE listeners cleanup
   const iceUnsubs = useRef<(() => void)[]>([])
@@ -193,15 +198,23 @@ const App = () => {
     }
   }, [isCameraOn, localStream])
 
+  const handleDragEnd = (event: DragEndEvent) => {
+    setParent(event.over ? (event.over.id as string) : 'video-preview-4')
+  }
+
+  const draggable = <SelfVideo selfVideoRef={selfVideoRef} />
+
   return (
-    <main className="flex flex-col items-center justify-center w-screen h-screen max-h-screen max-w-screen overflow-hidden">
-      <Navbar />
-      <VideoPreview previewVideoRef={previewVideoRef} startCall={startCall} joinCall={joinCall} />
-      <SelfVideo selfVideoRef={selfVideoRef} />
-      <RemoteVideo remoteVideoRef={remoteVideoRef} />
-      <CallControls />
-      <PermissionsDrawer />
-    </main>
+    <DndContext modifiers={[restrictToWindowEdges]} onDragEnd={handleDragEnd}>
+      <main className="flex flex-col items-center justify-center w-screen h-screen max-h-screen max-w-screen overflow-hidden">
+        <Navbar />
+        <VideoPreview previewVideoRef={previewVideoRef} startCall={startCall} joinCall={joinCall} />
+        <RemoteVideo remoteVideoRef={remoteVideoRef} />
+        <CallControls />
+        <PermissionsDrawer />
+        <DroppableZones parent={parent} draggable={draggable} />
+      </main>
+    </DndContext>
   )
 }
 

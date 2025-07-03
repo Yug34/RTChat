@@ -26,7 +26,7 @@ const SelfVideo: React.FC<SelfVideoProps> = ({ selfVideoRef }) => {
       style={style}
       className={cn({
         hidden: status !== 'Connected',
-        'absolute bottom-10 right-10 bg-transparent w-[400px] h-[416px]': status === 'Connected',
+        'bg-transparent w-[400px] h-[416px] z-40 pointer-events-auto': status === 'Connected',
       })}
       {...(status === 'Connected' ? attributes : {})}
       {...(status === 'Connected' ? listeners : {})}
