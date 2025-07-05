@@ -9,7 +9,7 @@ type SelfVideoProps = {
 
 const SelfVideo: React.FC<SelfVideoProps> = ({ selfVideoRef }) => {
   const { status, isCameraOn } = useChatStore()
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: 'self-video',
     disabled: status !== 'Connected',
   })
@@ -42,7 +42,12 @@ const SelfVideo: React.FC<SelfVideoProps> = ({ selfVideoRef }) => {
               playsInline
             />
             <div className="flex flex-row items-center justify-center w-full h-4 bg-black rounded-b-xl mb-2">
-              <GripHorizontal className="cursor-grab" />
+              <GripHorizontal
+                className={cn({
+                  'cursor-grab': !isDragging,
+                  'cursor-grabbing': isDragging,
+                })}
+              />
             </div>
           </>
         ) : (
