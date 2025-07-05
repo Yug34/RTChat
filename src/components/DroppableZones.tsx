@@ -29,18 +29,22 @@ const DroppableZones = ({ parent, draggable }: DroppableZonesProps) => {
 
   return (
     <div className="absolute top-0 left-0 w-screen h-screen pointer-events-none">
-      {droppableZones.map(({ id, className }) => (
-        <Droppable key={id} id={id} className={className}>
-          <div
-            className={cn(
-              'flex justify-center items-center w-full h-full border border-red-500 pointer-events-none',
-              parent === id && 'z-50 pointer-events-auto',
-            )}
-          >
-            {parent === id ? draggable : 'Drop here'}
-          </div>
-        </Droppable>
-      ))}
+      {droppableZones.map(({ id, className }) => {
+        const isDraggableWithinDropzone = parent === id
+
+        return (
+          <Droppable key={id} id={id} isActive={isDraggableWithinDropzone} className={className}>
+            <div
+              className={cn(
+                'flex justify-center items-center w-full h-full pointer-events-none',
+                isDraggableWithinDropzone && 'z-50 pointer-events-auto',
+              )}
+            >
+              {isDraggableWithinDropzone && draggable}
+            </div>
+          </Droppable>
+        )
+      })}
     </div>
   )
 }

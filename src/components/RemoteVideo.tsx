@@ -12,7 +12,7 @@ const RemoteVideo: React.FC<RemoteVideoProps> = ({ remoteVideoRef }) => {
     <video
       className={cn({
         'absolute bottom-4 right-4 w-[400px] h-[400px] bg-black': status !== 'Connected',
-        'w-full h-full bg-black -z-10': status === 'Connected',
+        'flex-1 bg-black -z-10': status === 'Connected',
         hidden: !isRemoteStreamActive,
       })}
       ref={remoteVideoRef}
