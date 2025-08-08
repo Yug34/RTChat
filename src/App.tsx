@@ -271,9 +271,16 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    if (isCameraOn) {
-      if (status !== 'Connected') {
-        previewVideoRef.current!.srcObject = localStream!
+    if (localStream) {
+      // Enable/disable video tracks
+      const videoTracks = localStream.getVideoTracks()
+      videoTracks.forEach((track) => {
+        track.enabled = isCameraOn
+      })
+
+      // Set preview video source when camera is on and not connected
+      if (isCameraOn && status !== 'Connected') {
+        previewVideoRef.current!.srcObject = localStream
       }
     }
   }, [isCameraOn, localStream, status])
