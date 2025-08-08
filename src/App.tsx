@@ -27,6 +27,7 @@ const App = () => {
   const {
     status,
     isCameraOn,
+    isMicOn,
     setIsInitialized,
     callId,
     setCallId,
@@ -37,7 +38,6 @@ const App = () => {
     setIsPermissionGranted,
     setLocalStream,
     localStream,
-    role,
   } = useChatStore()
 
   // Store the role when call is established to avoid issues with role being cleared
@@ -101,7 +101,6 @@ const App = () => {
   }
 
   const clearState = () => {
-    console.log('clearState called, current role before clearing:', role)
     setIsRemoteStreamActive(false)
     setStatus('Standby')
     setCallId('')
@@ -113,7 +112,8 @@ const App = () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: true,
-        audio: false,
+        audio: process.env.NODE_ENV === 'development' ? false : true,
+        // audio: true,
       })
       previewVideoRef.current!.srcObject = stream
       selfVideoRef.current!.srcObject = stream
@@ -125,7 +125,6 @@ const App = () => {
     }
   }
 
-  // OFFERER: Start a call
   const startCall = async () => {
     setRole('offer')
     establishedRoleRef.current = 'offer'
@@ -193,7 +192,6 @@ const App = () => {
     )
   }
 
-  // ANSWERER: Join a call
   const joinCall = async () => {
     setRole('answer')
     establishedRoleRef.current = 'answer'
@@ -278,12 +276,18 @@ const App = () => {
         track.enabled = isCameraOn
       })
 
+      // Enable/disable audio tracks
+      const audioTracks = localStream.getAudioTracks()
+      audioTracks.forEach((track) => {
+        track.enabled = isMicOn
+      })
+
       // Set preview video source when camera is on and not connected
       if (isCameraOn && status !== 'Connected') {
         previewVideoRef.current!.srcObject = localStream
       }
     }
-  }, [isCameraOn, localStream, status])
+  }, [isCameraOn, isMicOn, localStream, status])
 
   const draggable = <SelfVideo selfVideoRef={selfVideoRef} />
 
