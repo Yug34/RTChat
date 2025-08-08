@@ -15,12 +15,15 @@ import {
 } from './ui/alert-dialog'
 import useChatStore from '@/store/core'
 
-const CallControls: React.FC = () => {
+type CallControlsProps = {
+  onLeave: () => void
+}
+
+const CallControls: React.FC<CallControlsProps> = ({ onLeave }) => {
   const { isMicOn, setIsMicOn, isCameraOn, setIsCameraOn, status } = useChatStore()
 
   const toggleMic = () => setIsMicOn(!isMicOn)
   const toggleCamera = () => setIsCameraOn(!isCameraOn)
-  const onLeave = () => window.location.reload()
 
   return (
     <div className="flex flex-row justify-center w-full gap-4 py-2 rounded-none border-t bg-card">
@@ -47,7 +50,7 @@ const CallControls: React.FC = () => {
         <AlertDialogTrigger asChild>
           <Button
             variant="destructive"
-            className="flex items-center"
+            className="flex items-center cursor-pointer"
             disabled={status !== 'Connected'}
           >
             <LogOut className="w-4 h-4" />
@@ -61,10 +64,10 @@ const CallControls: React.FC = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel className="cursor-pointer">Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={onLeave}
-              className="text-white bg-destructive hover:bg-destructive/90"
+              className="text-white bg-destructive hover:bg-destructive/90 cursor-pointer"
             >
               Leave
             </AlertDialogAction>

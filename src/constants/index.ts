@@ -1,3 +1,5 @@
+const DEFAULT_ACTIVE_PARENT = 'br' // bottom right corner video preview
+
 const servers = {
   iceServers: [
     {
@@ -12,4 +14,4 @@ const servers = {
   ],
 }
 
-export { servers }
+export { servers, DEFAULT_ACTIVE_PARENT }

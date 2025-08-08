@@ -20,6 +20,8 @@ export type ChatStoreState = {
   setIsMicOn: (isMicOn: boolean) => void
   isCameraOn: boolean
   setIsCameraOn: (isCameraOn: boolean) => void
+  localStream: MediaStream | null
+  setLocalStream: (localStream: MediaStream | null) => void
 }
 
 const useChatStore = create<ChatStoreState>((set) => ({
@@ -41,6 +43,8 @@ const useChatStore = create<ChatStoreState>((set) => ({
   setIsMicOn: (isMicOn: boolean) => set({ isMicOn }),
   isCameraOn: true,
   setIsCameraOn: (isCameraOn: boolean) => set({ isCameraOn }),
+  localStream: null,
+  setLocalStream: (localStream: MediaStream | null) => set({ localStream }),
 }))
 
 export default useChatStore

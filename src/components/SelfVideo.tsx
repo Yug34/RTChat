@@ -2,13 +2,14 @@ import { cn } from '@/lib/utils'
 import useChatStore from '@/store/core'
 import { useDraggable } from '@dnd-kit/core'
 import { GripHorizontal } from 'lucide-react'
+import { useEffect } from 'react'
 
 type SelfVideoProps = {
   selfVideoRef: React.RefObject<HTMLVideoElement | null>
 }
 
 const SelfVideo: React.FC<SelfVideoProps> = ({ selfVideoRef }) => {
-  const { status, isCameraOn } = useChatStore()
+  const { status, isCameraOn, localStream } = useChatStore()
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: 'self-video',
     disabled: status !== 'Connected',
@@ -19,6 +20,18 @@ const SelfVideo: React.FC<SelfVideoProps> = ({ selfVideoRef }) => {
         transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
       }
     : undefined
+
+  useEffect(() => {
+    if (selfVideoRef.current && localStream) {
+      selfVideoRef.current.srcObject = localStream
+    }
+  }, [localStream, selfVideoRef])
+
+  useEffect(() => {
+    if (isCameraOn) {
+      selfVideoRef.current!.srcObject = localStream
+    }
+  }, [isCameraOn])
 
   return (
     <div

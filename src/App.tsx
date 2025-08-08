@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import {
   createCall,
   listenForAnswer,
@@ -19,6 +19,9 @@ import SelfVideo from './components/SelfVideo'
 import { DndContext, DragEndEvent } from '@dnd-kit/core'
 import { restrictToWindowEdges } from '@dnd-kit/modifiers'
 import DroppableZones from './components/DroppableZones'
+import useDragDropStore from './store/dragDropStore'
+import { DEFAULT_ACTIVE_PARENT } from '@/constants'
+import { cleanupCall, listenForCallTermination } from './utils/signaling'
 
 const App = () => {
   const {
@@ -32,19 +35,79 @@ const App = () => {
     setStatus,
     setIsRemoteStreamActive,
     setIsPermissionGranted,
+    setLocalStream,
+    localStream,
+    role,
   } = useChatStore()
+
+  // Store the role when call is established to avoid issues with role being cleared
+  const establishedRoleRef = useRef<'offer' | 'answer' | null>(null)
+
+  const { setActiveParent } = useDragDropStore()
 
   const previewVideoRef = useRef<HTMLVideoElement>(null)
   const selfVideoRef = useRef<HTMLVideoElement>(null)
   const remoteVideoRef = useRef<HTMLVideoElement>(null)
 
-  const [parent, setParent] = useState<string>('video-preview-4')
-
-  // ICE listeners cleanup
+  // Listeners cleanup
   const iceUnsubs = useRef<(() => void)[]>([])
   const answerUnsub = useRef<null | (() => void)>(null)
+  const callDocUnsub = useRef<null | (() => void)>(null)
+  const pcRef = useRef<RTCPeerConnection | null>(null)
 
-  const [localStream, setLocalStream] = useState<MediaStream | null>(null)
+  const endCall = async (
+    opts: { shouldDelete?: boolean; reason?: 'remote-left' | 'local-left' } = {},
+  ) => {
+    const { shouldDelete = false, reason } = opts
+
+    // Unsubscribe snapshots
+    iceUnsubs.current.forEach((unsub) => unsub())
+    iceUnsubs.current = []
+    if (answerUnsub.current) {
+      answerUnsub.current()
+      answerUnsub.current = null
+    }
+    if (callDocUnsub.current) {
+      callDocUnsub.current()
+      callDocUnsub.current = null
+    }
+
+    try {
+      pcRef.current?.close()
+    } catch (e) {
+      console.warn('Error closing peer connection', e)
+    }
+    pcRef.current = null
+
+    try {
+      if (shouldDelete && callId) {
+        await cleanupCall(callId)
+      }
+    } catch (e) {
+      console.warn('Error cleaning up call', e)
+    }
+
+    if (remoteVideoRef.current) {
+      remoteVideoRef.current.srcObject = null
+    }
+
+    if (reason === 'remote-left') {
+      const currentRole = establishedRoleRef.current
+      const remoteName = currentRole === 'offer' ? 'guest' : 'host'
+      toast.info(`The ${remoteName} has disconnected.`)
+    }
+
+    clearState()
+  }
+
+  const clearState = () => {
+    console.log('clearState called, current role before clearing:', role)
+    setIsRemoteStreamActive(false)
+    setStatus('Standby')
+    setCallId('')
+    setRole(null)
+    establishedRoleRef.current = null
+  }
 
   const initialize = async () => {
     try {
@@ -65,8 +128,10 @@ const App = () => {
   // OFFERER: Start a call
   const startCall = async () => {
     setRole('offer')
+    establishedRoleRef.current = 'offer'
     setStatus('Hosting')
     const pc = new RTCPeerConnection()
+    pcRef.current = pc
     const remote = new MediaStream()
     remoteVideoRef.current!.srcObject = remote
 
@@ -102,9 +167,14 @@ const App = () => {
     // On ICE candidate
     pc.onicecandidate = async (event) => {
       if (event.candidate) {
-        await addIceCandidate(callId, event.candidate.toJSON(), 'offer')
+        await addIceCandidate(newCallId, event.candidate.toJSON(), 'offer')
       }
     }
+
+    // Listen for call termination (remote leaves)
+    callDocUnsub.current = listenForCallTermination(newCallId, () => {
+      endCall({ shouldDelete: false, reason: 'remote-left' })
+    })
 
     // Listen for answer
     answerUnsub.current = listenForAnswer(newCallId, {
@@ -126,8 +196,10 @@ const App = () => {
   // ANSWERER: Join a call
   const joinCall = async () => {
     setRole('answer')
+    establishedRoleRef.current = 'answer'
     setStatus('Joining')
     const pc = new RTCPeerConnection()
+    pcRef.current = pc
     const remote = new MediaStream()
     remoteVideoRef.current!.srcObject = remote
 
@@ -170,6 +242,11 @@ const App = () => {
     toast.success('You have joined the call!')
     setStatus('Connected')
 
+    // Listen for call termination (remote leaves)
+    callDocUnsub.current = listenForCallTermination(joinId, () => {
+      endCall({ shouldDelete: false, reason: 'remote-left' })
+    })
+
     // Listen for offerer's ICE candidates
     iceUnsubs.current.push(
       listenForIceCandidates(joinId, 'offer', (candidate) => {
@@ -185,24 +262,31 @@ const App = () => {
     return () => {
       unsubs.forEach((unsub) => unsub())
       if (answerUnsub.current) answerUnsub.current()
+      if (callDocUnsub.current) callDocUnsub.current()
+      // Ensure cleanup on unmount
+      if (pcRef.current) {
+        endCall({ shouldDelete: true })
+      }
     }
   }, [])
 
   useEffect(() => {
     if (isCameraOn) {
-      if (status === 'Connected') {
-        selfVideoRef.current!.srcObject = localStream!
-      } else {
+      if (status !== 'Connected') {
         previewVideoRef.current!.srcObject = localStream!
       }
     }
-  }, [isCameraOn, localStream])
-
-  const handleDragEnd = (event: DragEndEvent) => {
-    setParent(event.over ? (event.over.id as string) : 'video-preview-4')
-  }
+  }, [isCameraOn, localStream, status])
 
   const draggable = <SelfVideo selfVideoRef={selfVideoRef} />
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    setActiveParent(event.over ? (event.over.id as string) : DEFAULT_ACTIVE_PARENT)
+  }
+
+  const handleLeave = () => {
+    endCall({ shouldDelete: true, reason: 'local-left' })
+  }
 
   return (
     <DndContext modifiers={[restrictToWindowEdges]} onDragEnd={handleDragEnd}>
@@ -210,9 +294,9 @@ const App = () => {
         <Navbar />
         <VideoPreview previewVideoRef={previewVideoRef} startCall={startCall} joinCall={joinCall} />
         <RemoteVideo remoteVideoRef={remoteVideoRef} />
-        <CallControls />
+        <CallControls onLeave={handleLeave} />
         <PermissionsDrawer />
-        <DroppableZones parent={parent} draggable={draggable} />
+        <DroppableZones draggable={draggable} />
       </main>
     </DndContext>
   )

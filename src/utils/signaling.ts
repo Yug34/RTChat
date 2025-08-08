@@ -40,6 +40,15 @@ export const listenForAnswer = (callId: string, { onAnswer }: Callbacks) => {
   })
 }
 
+export const listenForCallTermination = (callId: string, onTerminated: () => void) => {
+  const callRef = doc(db, 'calls', callId)
+  return onSnapshot(callRef, (snapshot: DocumentSnapshot) => {
+    if (!snapshot.exists()) {
+      onTerminated()
+    }
+  })
+}
+
 export const setAnswer = async (callId: string, answer: RTCSessionDescriptionInit) => {
   const callRef = doc(db, 'calls', callId)
   await updateDoc(callRef, { answer })
