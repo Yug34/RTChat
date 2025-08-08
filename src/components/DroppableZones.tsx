@@ -13,13 +13,11 @@ interface DroppableZoneConfig {
   className: string
 }
 
-const ZONE_SIZE = '600px'
-
 const droppableZones: DroppableZoneConfig[] = [
-  { id: 'tl', className: `absolute top-0 left-0 w-[${ZONE_SIZE}] h-[${ZONE_SIZE}]` },
-  { id: 'bl', className: `absolute bottom-0 left-0 w-[${ZONE_SIZE}] h-[${ZONE_SIZE}]` },
-  { id: 'tr', className: `absolute top-0 right-0 w-[${ZONE_SIZE}] h-[${ZONE_SIZE}]` },
-  { id: 'br', className: `absolute bottom-0 right-0 w-[${ZONE_SIZE}] h-[${ZONE_SIZE}]` },
+  { id: 'tl', className: 'top-0 left-0 w-[600px] h-[600px]' },
+  { id: 'bl', className: 'items-end bottom-0 left-0 w-[600px] h-[600px]' },
+  { id: 'tr', className: 'justify-end top-0 right-0 w-[600px] h-[600px]' },
+  { id: 'br', className: 'items-end justify-end bottom-0 right-0 w-[600px] h-[600px]' },
 ]
 
 const DroppableZones = ({ draggable }: DroppableZonesProps) => {
@@ -36,10 +34,15 @@ const DroppableZones = ({ draggable }: DroppableZonesProps) => {
         const isDraggableWithinDropzone = activeParent === id
 
         return (
-          <Droppable key={id} id={id} isActive={isDraggableWithinDropzone} className={className}>
+          <Droppable
+            key={id}
+            id={id}
+            isActive={isDraggableWithinDropzone}
+            className={`absolute flex ${className}`}
+          >
             <div
               className={cn(
-                'flex justify-center items-center w-full h-full pointer-events-none',
+                'flex justify-center items-start w-fit h-fit p-4 pointer-events-none',
                 isDraggableWithinDropzone && 'z-50 pointer-events-auto',
               )}
             >
