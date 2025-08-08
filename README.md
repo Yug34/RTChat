@@ -7,7 +7,6 @@ No back-end, all peer-to-peer media sharing!
 ## ✨ Features
 
 - **Peer-to-Peer video calls**: Direct browser-to-browser communication using WebRTC
-- **Call Creation & Joining**: Create calls with unique IDs or join existing calls
 - **Drag & Drop Interface**: Reposition your video feed anywhere on the screen
 - **Camera Controls**: Toggle camera on/off during calls
 - **Real-time Signaling**: Firebase Firestore handles WebRTC signaling
