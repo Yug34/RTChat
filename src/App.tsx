@@ -32,6 +32,7 @@ const App = () => {
     callId,
     setCallId,
     joinId,
+    role,
     setRole,
     setStatus,
     setIsRemoteStreamActive,
@@ -39,9 +40,6 @@ const App = () => {
     setLocalStream,
     localStream,
   } = useChatStore()
-
-  // Store the role when call is established to avoid issues with role being cleared
-  const establishedRoleRef = useRef<'offer' | 'answer' | null>(null)
 
   const { setActiveParent } = useDragDropStore()
 
@@ -92,8 +90,7 @@ const App = () => {
     }
 
     if (reason === 'remote-left') {
-      const currentRole = establishedRoleRef.current
-      const remoteName = currentRole === 'offer' ? 'guest' : 'host'
+      const remoteName = role === 'offer' ? 'guest' : 'host'
       toast.info(`The ${remoteName} has disconnected.`)
     }
 
@@ -105,15 +102,14 @@ const App = () => {
     setStatus('Standby')
     setCallId('')
     setRole(null)
-    establishedRoleRef.current = null
   }
 
   const initialize = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: true,
+        // Audio quality from my headphones is decreased when mic is being used.
         audio: process.env.NODE_ENV === 'development' ? false : true,
-        // audio: true,
       })
       previewVideoRef.current!.srcObject = stream
       selfVideoRef.current!.srcObject = stream
@@ -127,7 +123,6 @@ const App = () => {
 
   const startCall = async () => {
     setRole('offer')
-    establishedRoleRef.current = 'offer'
     setStatus('Hosting')
     const pc = new RTCPeerConnection()
     pcRef.current = pc
@@ -194,7 +189,6 @@ const App = () => {
 
   const joinCall = async () => {
     setRole('answer')
-    establishedRoleRef.current = 'answer'
     setStatus('Joining')
     const pc = new RTCPeerConnection()
     pcRef.current = pc

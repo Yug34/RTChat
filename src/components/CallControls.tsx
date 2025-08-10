@@ -60,7 +60,8 @@ const CallControls: React.FC<CallControlsProps> = ({ onLeave }) => {
           <AlertDialogHeader>
             <AlertDialogTitle>Leave Call?</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to leave the call? You will be disconnected from the session.
+              Are you sure you want to leave the call? This will disconnect you from the session and
+              terminate the video call.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
