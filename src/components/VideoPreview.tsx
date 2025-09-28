@@ -21,7 +21,7 @@ const VideoPreview = ({ previewVideoRef, startCall, joinCall }: VideoPreviewProp
 
   return (
     <div className="flex flex-col items-center justify-center w-full h-full">
-      <Card className="flex flex-row items-center justify-center w-fit max-h-[448px] gap-6 p-6 shadow-none">
+      <Card className="flex flex-col lg:flex-row items-center justify-center w-fit h-fit lg:max-h-[448px] gap-6 p-6 shadow-none">
         <div
           className={
             'w-[400px] h-[400px] bg-transparent rounded-l-xl rounded-r-none border border-gray-400'
@@ -63,7 +63,7 @@ const VideoPreview = ({ previewVideoRef, startCall, joinCall }: VideoPreviewProp
             </div>
           </div>
         </div>
-        <span className="w-[1px] h-full bg-gray-400"></span>
+        <span className="w-full min-h-[1px] lg:w-[1px] lg:h-full bg-gray-400" />
         <CallCreation startCall={startCall} joinCall={joinCall} />
       </Card>
     </div>
