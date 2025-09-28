@@ -1,10 +1,7 @@
-import React from 'react'
-import { Toggle } from '@/components/ui/toggle'
+import React, { useState } from 'react'
 import { Mic, MicOff, Video, VideoOff, LogOut } from 'lucide-react'
-import { Button } from './ui/button'
 import {
   AlertDialog,
-  AlertDialogTrigger,
   AlertDialogContent,
   AlertDialogHeader,
   AlertDialogFooter,
@@ -15,6 +12,7 @@ import {
 } from './ui/alert-dialog'
 import useChatStore from '@/store/core'
 import { Dock, DockIcon, DockItem, DockLabel } from '@/components/ui/dock'
+import { cn } from '@/lib/utils'
 
 type CallControlsProps = {
   onLeave: () => void
@@ -22,9 +20,27 @@ type CallControlsProps = {
 
 const CallControls: React.FC<CallControlsProps> = ({ onLeave }) => {
   const { isMicOn, setIsMicOn, isCameraOn, setIsCameraOn, status } = useChatStore()
+  const isConnected = status === 'Connected'
+  const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false)
 
-  const toggleMic = () => setIsMicOn(!isMicOn)
-  const toggleCamera = () => setIsCameraOn(!isCameraOn)
+  const toggleMic = () => {
+    if (!isConnected) return
+    setIsMicOn(!isMicOn)
+  }
+  const toggleCamera = () => {
+    if (!isConnected) return
+    setIsCameraOn(!isCameraOn)
+  }
+
+  const handleLeaveClick = () => {
+    if (!isConnected) return
+    setIsLeaveDialogOpen(true)
+  }
+
+  const handleLeaveConfirm = () => {
+    setIsLeaveDialogOpen(false)
+    onLeave()
+  }
 
   const data = [
     {
@@ -61,50 +77,54 @@ const CallControls: React.FC<CallControlsProps> = ({ onLeave }) => {
       onClick: toggleCamera,
       href: '#',
     },
-    // bg-destructive hover:bg-destructive/90
     {
       title: 'Leave',
-      icon: (
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <LogOut className="h-full w-full text-neutral-600 dark:text-neutral-300" />
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Leave Call?</AlertDialogTitle>
-              <AlertDialogDescription>
-                Are you sure you want to leave the call? This will disconnect you from the session
-                and terminate the video call.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel className="cursor-pointer">Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={onLeave} className="text-white cursor-pointer">
-                Leave
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      ),
+      icon: <LogOut className="h-full w-full" />,
+      onClick: handleLeaveClick,
       href: '#',
+      className: 'bg-destructive hover:bg-destructive/90',
     },
   ]
 
   return (
-    <div className="absolute bottom-2 left-1/2 max-w-full -translate-x-1/2">
-      <Dock className="items-end pb-3">
-        {data.map((item, idx) => (
-          <DockItem
-            key={idx}
-            className="aspect-square rounded-full bg-gray-200 dark:bg-neutral-800"
-            onClick={item.onClick ?? (() => {})}
-          >
-            <DockLabel>{item.title}</DockLabel>
-            <DockIcon>{item.icon}</DockIcon>
-          </DockItem>
-        ))}
-      </Dock>
-    </div>
+    <>
+      <div className="absolute bottom-2 left-1/2 max-w-full -translate-x-1/2">
+        <Dock className="items-end pb-3">
+          {data.map((item, idx) => (
+            <DockItem
+              key={idx}
+              className={cn(
+                'aspect-square rounded-full',
+                item.className ?? 'bg-gray-200 dark:bg-neutral-800',
+                status !== 'Connected' && 'opacity-50',
+              )}
+              onClick={item.onClick ?? (() => {})}
+            >
+              <DockLabel>{item.title}</DockLabel>
+              <DockIcon>{item.icon}</DockIcon>
+            </DockItem>
+          ))}
+        </Dock>
+      </div>
+
+      <AlertDialog open={isLeaveDialogOpen} onOpenChange={setIsLeaveDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Leave Call?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to leave the call? This will disconnect you from the session and
+              terminate the video call.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="cursor-pointer">Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleLeaveConfirm} className="text-white cursor-pointer">
+              Leave
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   )
 }
 
