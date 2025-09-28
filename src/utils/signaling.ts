@@ -13,7 +13,6 @@ import {
   setDoc,
 } from 'firebase/firestore'
 
-// Collection for calls
 type Candidate = RTCIceCandidateInit
 
 type Callbacks = {
