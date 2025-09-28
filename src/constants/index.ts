@@ -1,4 +1,4 @@
-const DEFAULT_ACTIVE_PARENT = 'br' // bottom right corner video preview
+const DEFAULT_ACTIVE_PARENT = 'tr' // top right corner video preview
 
 const servers = {
   iceServers: [
