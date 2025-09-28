@@ -296,7 +296,7 @@ const App = () => {
   return (
     <DndContext modifiers={[restrictToWindowEdges]} onDragEnd={handleDragEnd}>
       <main className="flex flex-col items-center justify-center w-screen h-screen max-h-screen max-w-screen overflow-hidden">
-        <Navbar />
+        {status !== 'Connected' && <Navbar />}
         <VideoPreview previewVideoRef={previewVideoRef} startCall={startCall} joinCall={joinCall} />
         <RemoteVideo remoteVideoRef={remoteVideoRef} />
         <CallControls onLeave={handleLeave} />
