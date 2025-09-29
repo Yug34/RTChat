@@ -32,7 +32,7 @@ const DroppableZones = ({ draggable }: DroppableZonesProps) => {
   }
 
   return (
-    <div className="absolute top-0 left-0 w-screen h-screen pointer-events-none">
+    <div className="absolute top-0 left-0 w-screen h-screen pointer-events-none touch-none">
       {droppableZones.map(({ id, className }) => {
         const isDraggableWithinDropzone = activeParent === id
 

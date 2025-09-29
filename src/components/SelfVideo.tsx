@@ -41,7 +41,7 @@ const SelfVideo: React.FC<SelfVideoProps> = ({ selfVideoRef }) => {
       style={style}
       className={cn({
         hidden: status !== 'Connected',
-        'bg-transparent w-[400px] h-[416px] z-40 pointer-events-auto opacity-100':
+        'bg-transparent w-[400px] h-[416px] z-40 pointer-events-auto opacity-100 touch-none select-none':
           status === 'Connected',
       })}
       {...(status === 'Connected' ? attributes : {})}
@@ -51,10 +51,13 @@ const SelfVideo: React.FC<SelfVideoProps> = ({ selfVideoRef }) => {
         {isCameraOn ? (
           <>
             <video
-              className="w-full h-[400px] bg-black rounded-t-xl"
+              className="w-full h-[400px] bg-black rounded-t-xl touch-none"
               ref={selfVideoRef}
               autoPlay
               playsInline
+              controls={false}
+              draggable={false}
+              {...(status === 'Connected' ? listeners : {})}
             />
             <div className="flex flex-row items-center justify-center w-full h-4 bg-black rounded-b-xl mb-2">
               <GripHorizontal

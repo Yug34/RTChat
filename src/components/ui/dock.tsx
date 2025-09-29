@@ -84,6 +84,7 @@ function Dock({
       style={{
         height: height,
         scrollbarWidth: 'none',
+        zIndex: 1000,
       }}
       className="mx-2 flex max-w-full items-end overflow-x-auto"
     >

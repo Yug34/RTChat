@@ -16,7 +16,15 @@ import RemoteVideo from './components/RemoteVideo'
 import Navbar from './components/Navbar'
 import VideoPreview from './components/VideoPreview'
 import SelfVideo from './components/SelfVideo'
-import { DndContext, DragEndEvent } from '@dnd-kit/core'
+import {
+  DndContext,
+  DragEndEvent,
+  MouseSensor,
+  TouchSensor,
+  KeyboardSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core'
 import { restrictToWindowEdges } from '@dnd-kit/modifiers'
 import DroppableZones from './components/DroppableZones'
 import useDragDropStore from './store/dragDropStore'
@@ -283,6 +291,21 @@ const App = () => {
 
   const draggable = <SelfVideo selfVideoRef={selfVideoRef} />
 
+  const sensors = useSensors(
+    useSensor(MouseSensor, {
+      activationConstraint: {
+        distance: 2,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 20,
+        tolerance: 6,
+      },
+    }),
+    useSensor(KeyboardSensor),
+  )
+
   const handleDragEnd = (event: DragEndEvent) => {
     setActiveParent(event.over ? (event.over.id as string) : DEFAULT_ACTIVE_PARENT)
   }
@@ -292,7 +315,7 @@ const App = () => {
   }
 
   return (
-    <DndContext modifiers={[restrictToWindowEdges]} onDragEnd={handleDragEnd}>
+    <DndContext sensors={sensors} modifiers={[restrictToWindowEdges]} onDragEnd={handleDragEnd}>
       <main className="flex flex-col items-center justify-center w-screen h-screen max-h-screen max-w-screen overflow-hidden">
         {status !== 'Connected' && <Navbar />}
         <VideoPreview previewVideoRef={previewVideoRef} startCall={startCall} joinCall={joinCall} />
