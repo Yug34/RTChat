@@ -25,15 +25,15 @@ const VideoPreview = ({ previewVideoRef, startCall, joinCall }: VideoPreviewProp
 
   return (
     <div className="flex flex-col items-center justify-center w-full h-full">
-      <Card className="flex flex-col lg:flex-row items-center justify-center w-fit h-fit lg:max-h-[448px] gap-6 p-6 shadow-none">
+      <Card className="flex flex-col lg:flex-row items-center justify-center w-fit h-fit lg:max-h-[448px] gap-2 lg:gap-6 p-2 lg:p-6 shadow-none">
         <div
           className={
-            'w-[400px] h-[400px] bg-transparent rounded-xl rounded-b-none lg:rounded-none lg:rounded-l-xl lg:rounded-r-none border border-gray-400'
+            'w-fit h-fit max-w-[348px] max-h-[348px] lg:w-[400px] lg:h-[400px] bg-transparent rounded-xl rounded-b-none lg:rounded-none lg:rounded-l-xl lg:rounded-r-none border-none lg:border lg:border-gray-400'
           }
         >
           {isCameraOn ? (
             <video
-              className="w-full h-full bg-black rounded-xl rounded-b-none lg:rounded-none lg:rounded-l-xl lg:rounded-r-none"
+              className="w-full h-full lg:w-[400px] lg:h-[400px] bg-black rounded-xl rounded-b-none lg:rounded-none lg:rounded-l-xl lg:rounded-r-none"
               ref={previewVideoRef}
               autoPlay
               playsInline
@@ -49,7 +49,7 @@ const VideoPreview = ({ previewVideoRef, startCall, joinCall }: VideoPreviewProp
           <div className="relative bottom-[48px] left-0 w-full h-10 rounded-xl z-20 bg-transparent">
             <div className="flex items-center justify-center w-full h-full rounded-xl gap-x-2 py-2">
               <Toggle
-                className="cursor-pointer z-30"
+                className="cursor-pointer z-30 bg-black/50"
                 variant="outline"
                 aria-label="Toggle Microphone"
                 onClick={toggleMic}
@@ -57,7 +57,7 @@ const VideoPreview = ({ previewVideoRef, startCall, joinCall }: VideoPreviewProp
                 {isMicOn ? <Mic /> : <MicOff className="text-red-500" />}
               </Toggle>
               <Toggle
-                className="cursor-pointer z-30"
+                className="cursor-pointer z-30 bg-black/50"
                 variant="outline"
                 aria-label="Toggle Camera"
                 onClick={toggleCamera}

@@ -31,7 +31,7 @@ const CallControls: React.FC<CallCreationProps> = ({ startCall, joinCall }) => {
 
   if (status === 'Waiting') {
     return (
-      <Card className="flex flex-col p-6 gap-y-4 w-full max-w-[400px]">
+      <Card className="flex flex-col p-0 lg:p-6 gap-y-2 lg:gap-y-4 w-full max-w-[400px]">
         <div className="flex w-full">
           <Button disabled className="w-full">
             Waiting for guest to join...
@@ -73,7 +73,7 @@ const CallControls: React.FC<CallCreationProps> = ({ startCall, joinCall }) => {
   }
 
   return (
-    <Card className="flex flex-col p-6 gap-y-2 w-full max-w-[400px] rounded-l-none">
+    <Card className="flex flex-col p-2 lg:p-6 gap-y-2 w-full max-w-[400px] rounded-l-none">
       <div className="flex w-full">
         {status === 'Hosting' ? (
           <Button disabled className="w-full">
