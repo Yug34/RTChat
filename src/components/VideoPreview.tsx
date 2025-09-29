@@ -24,18 +24,18 @@ const VideoPreview = ({ previewVideoRef, startCall, joinCall }: VideoPreviewProp
       <Card className="flex flex-col lg:flex-row items-center justify-center w-fit h-fit lg:max-h-[448px] gap-6 p-6 shadow-none">
         <div
           className={
-            'w-[400px] h-[400px] bg-transparent rounded-l-xl rounded-r-none border border-gray-400'
+            'w-[400px] h-[400px] bg-transparent rounded-xl rounded-b-none lg:rounded-none lg:rounded-l-xl lg:rounded-r-none border border-gray-400'
           }
         >
           {isCameraOn ? (
             <video
-              className="w-full h-full bg-black rounded-l-xl rounded-r-none"
+              className="w-full h-full bg-black rounded-xl rounded-b-none lg:rounded-none lg:rounded-l-xl lg:rounded-r-none"
               ref={previewVideoRef}
               autoPlay
               playsInline
             />
           ) : (
-            <div className="w-full h-full bg-[#202124] text-white rounded-l-xl rounded-r-none flex flex-col items-center justify-center">
+            <div className="w-full h-full bg-[#202124] text-white rounded-xl rounded-b-none lg:rounded-none lg:rounded-l-xl lg:rounded-r-none flex flex-col items-center justify-center">
               <span className="text-lg font-bold">No camera</span>
               <span className="text-md">
                 Just a ✨ <span className="italic">beautiful</span> ✨ human
