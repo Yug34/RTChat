@@ -11,7 +11,11 @@ interface VideoPreviewProps {
 }
 
 const VideoPreview = ({ previewVideoRef, startCall, joinCall }: VideoPreviewProps) => {
-  const { isMicOn, setIsMicOn, isCameraOn, setIsCameraOn, status } = useChatStore()
+  const isMicOn = useChatStore((s) => s.isMicOn)
+  const setIsMicOn = useChatStore((s) => s.setIsMicOn)
+  const isCameraOn = useChatStore((s) => s.isCameraOn)
+  const setIsCameraOn = useChatStore((s) => s.setIsCameraOn)
+  const status = useChatStore((s) => s.status)
   const toggleMic = () => setIsMicOn(!isMicOn)
   const toggleCamera = () => setIsCameraOn(!isCameraOn)
 

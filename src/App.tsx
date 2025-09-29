@@ -24,22 +24,20 @@ import { DEFAULT_ACTIVE_PARENT } from '@/constants'
 import { cleanupCall, listenForCallTermination } from './utils/signaling'
 
 const App = () => {
-  const {
-    status,
-    isCameraOn,
-    isMicOn,
-    setIsInitialized,
-    callId,
-    setCallId,
-    joinId,
-    role,
-    setRole,
-    setStatus,
-    setIsRemoteStreamActive,
-    setIsPermissionGranted,
-    setLocalStream,
-    localStream,
-  } = useChatStore()
+  const status = useChatStore((s) => s.status)
+  const isCameraOn = useChatStore((s) => s.isCameraOn)
+  const isMicOn = useChatStore((s) => s.isMicOn)
+  const setIsInitialized = useChatStore((s) => s.setIsInitialized)
+  const callId = useChatStore((s) => s.callId)
+  const setCallId = useChatStore((s) => s.setCallId)
+  const joinId = useChatStore((s) => s.joinId)
+  const role = useChatStore((s) => s.role)
+  const setRole = useChatStore((s) => s.setRole)
+  const setStatus = useChatStore((s) => s.setStatus)
+  const setIsRemoteStreamActive = useChatStore((s) => s.setIsRemoteStreamActive)
+  const setIsPermissionGranted = useChatStore((s) => s.setIsPermissionGranted)
+  const setLocalStream = useChatStore((s) => s.setLocalStream)
+  const localStream = useChatStore((s) => s.localStream)
 
   const { setActiveParent } = useDragDropStore()
 

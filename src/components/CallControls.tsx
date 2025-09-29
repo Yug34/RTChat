@@ -19,7 +19,11 @@ type CallControlsProps = {
 }
 
 const CallControls: React.FC<CallControlsProps> = ({ onLeave }) => {
-  const { isMicOn, setIsMicOn, isCameraOn, setIsCameraOn, status } = useChatStore()
+  const isMicOn = useChatStore((s) => s.isMicOn)
+  const setIsMicOn = useChatStore((s) => s.setIsMicOn)
+  const isCameraOn = useChatStore((s) => s.isCameraOn)
+  const setIsCameraOn = useChatStore((s) => s.setIsCameraOn)
+  const status = useChatStore((s) => s.status)
   const isConnected = status === 'Connected'
   const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false)
 

@@ -14,10 +14,13 @@ interface DroppableZoneConfig {
 }
 
 const droppableZones: DroppableZoneConfig[] = [
-  { id: 'tl', className: 'top-0 left-0 w-[600px] h-[600px]' },
-  { id: 'bl', className: 'items-end bottom-0 left-0 w-[600px] h-[600px]' },
-  { id: 'tr', className: 'justify-end top-0 right-0 w-[600px] h-[600px]' },
-  { id: 'br', className: 'items-end justify-end bottom-0 right-0 w-[600px] h-[600px]' },
+  { id: 'tl', className: 'top-0 left-0 w-[50vw] h-[50vw] lg:w-[600px] lg:h-[600px]' },
+  { id: 'bl', className: 'items-end bottom-0 left-0 w-[50vw] h-[50vw] lg:w-[600px] lg:h-[600px]' },
+  { id: 'tr', className: 'justify-end top-0 right-0 w-[50vw] h-[50vw] lg:w-[600px] lg:h-[600px]' },
+  {
+    id: 'br',
+    className: 'items-end justify-end bottom-0 right-0 w-[50vw] h-[50vw] lg:w-[600px] lg:h-[600px]',
+  },
 ]
 
 const DroppableZones = ({ draggable }: DroppableZonesProps) => {

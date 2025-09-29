@@ -2,14 +2,16 @@ import { cn } from '@/lib/utils'
 import useChatStore from '@/store/core'
 import { useDraggable } from '@dnd-kit/core'
 import { GripHorizontal } from 'lucide-react'
-import { useEffect } from 'react'
+import { memo, useEffect } from 'react'
 
 type SelfVideoProps = {
   selfVideoRef: React.RefObject<HTMLVideoElement | null>
 }
 
 const SelfVideo: React.FC<SelfVideoProps> = ({ selfVideoRef }) => {
-  const { status, isCameraOn, localStream } = useChatStore()
+  const status = useChatStore((s) => s.status)
+  const isCameraOn = useChatStore((s) => s.isCameraOn)
+  const localStream = useChatStore((s) => s.localStream)
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: 'self-video',
     disabled: status !== 'Connected',
@@ -73,4 +75,4 @@ const SelfVideo: React.FC<SelfVideoProps> = ({ selfVideoRef }) => {
   )
 }
 
-export default SelfVideo
+export default memo(SelfVideo)
