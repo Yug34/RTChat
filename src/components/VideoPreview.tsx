@@ -28,7 +28,7 @@ const VideoPreview = ({ previewVideoRef, startCall, joinCall }: VideoPreviewProp
       <Card className="flex flex-col lg:flex-row items-center justify-center w-fit h-fit lg:max-h-[448px] gap-2 lg:gap-6 p-2 lg:p-6 shadow-none">
         <div
           className={
-            'w-fit h-fit max-w-[348px] max-h-[348px] lg:w-[400px] lg:h-[400px] bg-transparent rounded-xl rounded-b-none lg:rounded-none lg:rounded-l-xl lg:rounded-r-none border-none lg:border lg:border-gray-400'
+            'max-w-[332px] max-h-[332px] lg:w-[400px] lg:h-[400px] lg:h-[348px] lg:max-w-[348px] bg-transparent rounded-xl rounded-b-none lg:rounded-none lg:rounded-l-xl lg:rounded-r-none border-none lg:border lg:border-gray-400'
           }
         >
           {isCameraOn ? (
@@ -39,7 +39,7 @@ const VideoPreview = ({ previewVideoRef, startCall, joinCall }: VideoPreviewProp
               playsInline
             />
           ) : (
-            <div className="w-full h-full bg-[#202124] text-white rounded-xl rounded-b-none lg:rounded-none lg:rounded-l-xl lg:rounded-r-none flex flex-col items-center justify-center">
+            <div className="w-[332px] h-[332px] lg:w-full lg:h-full bg-[#202124] text-white rounded-xl rounded-b-none lg:rounded-none lg:rounded-l-xl lg:rounded-r-none flex flex-col items-center justify-center">
               <span className="text-lg font-bold">No camera</span>
               <span className="text-md">
                 Just a ✨ <span className="italic">beautiful</span> ✨ human
