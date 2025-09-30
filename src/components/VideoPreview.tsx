@@ -33,7 +33,7 @@ const VideoPreview = ({ previewVideoRef, startCall, joinCall }: VideoPreviewProp
         >
           {isCameraOn ? (
             <video
-              className="w-full h-full lg:w-[400px] lg:h-[400px] bg-black rounded-xl rounded-b-none lg:rounded-none lg:rounded-l-xl lg:rounded-r-none"
+              className="lg:border border-gray-400 w-full h-full bg-black rounded-xl rounded-b-none lg:rounded-none lg:rounded-l-xl lg:rounded-r-none"
               ref={previewVideoRef}
               autoPlay
               playsInline
